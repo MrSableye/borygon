@@ -1,11 +1,14 @@
 {
-  "name": "pokemon-showdown-ts",
+  "name": "@showderp/pokemon-showdown-ts",
   "version": "0.1.0",
   "description": "A TypeScript client for interacting with Pokémon Showdown",
+  "repository": "showderp/pokemon-showdown-ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "lint": "eslint ./src --fix --ext .ts"
+    "build": "tsc",
+    "lint": "eslint ./src --fix --ext .ts",
+    "prepublish": "npm run build"
   },
   "author": "Mr. Sableye <mister.sableye@gmail.com>",
   "license": "ISC",

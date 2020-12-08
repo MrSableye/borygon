@@ -53,7 +53,7 @@ export class RawClient {
     this.eventErrorEmitter = new Emittery.Typed<EventError>();
   }
 
-  public connect() {
+  public connect(): Promise<void> {
     const websocketUrl = `wss://${this.clientOptions.server}:${this.clientOptions.port}/showdown/websocket`;
 
     this.socket = new WebSocket(websocketUrl);
