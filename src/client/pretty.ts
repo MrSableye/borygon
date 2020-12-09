@@ -125,9 +125,19 @@ export class PrettyClient {
     return this.loggedIn;
   }
 
-  private async attemptLogin(username: string, password: string) {
+  private async attemptLogin(username: string, password: string): Promise<void> {
     if (!this.challenge) {
-      return Promise.reject(new Error('Challenge not received yet'));
+      // TODO: Make this process more streamlined
+      try {
+        await new Promise<void>((resolve, reject) => {
+          this.eventEmitter.on('challenge', () => resolve());
+          wait(200).then(() => reject()); // TODO: Configure this delay
+        });
+
+        return this.attemptLogin(username, password);
+      } catch (error) {
+        return Promise.reject(new Error('Challenge not received yet'));
+      }
     }
 
     const data = {
