@@ -396,3 +396,5 @@ export const parsers: PokemonShowdownEventParsers = {
   userCount: parseUserCountEvent,
   default: (input) => ({ value: [input, {}] }),
 };
+
+export const pokemonShowdownEventNames = Object.keys(parsers) as (keyof PokemonShowdownEvents)[];
