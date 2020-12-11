@@ -115,7 +115,7 @@ export class RawClient {
           const roomEvent = {
             room,
             rawEventName,
-            rawEvent: rawMessage,
+            rawEvent: message,
             eventName,
             event: parserResult.value,
           } as RoomEvents[typeof eventName];
