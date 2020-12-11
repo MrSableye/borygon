@@ -1,6 +1,6 @@
 {
   "name": "@showderp/pokemon-showdown-ts",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A TypeScript client for interacting with Pokémon Showdown",
   "repository": "showderp/pokemon-showdown-ts",
   "main": "dist/index.js",

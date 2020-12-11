@@ -112,12 +112,15 @@ export class RawClient {
         const parserResult = parsers[eventName](args);
 
         if ('value' in parserResult) {
-          this.eventEmitter.emit(eventName, {
+          const roomEvent = {
             room,
-            eventName: rawEventName,
-            rawEvent: message,
+            rawEventName,
+            rawEvent: rawMessage,
+            eventName,
             event: parserResult.value,
-          });
+          } as RoomEvents[typeof eventName];
+
+          this.eventEmitter.emit(eventName, roomEvent);
         } else {
           this.eventErrorEmitter.emit('eventError', { eventName: rawEventName, rawEvent: message, errors: parserResult.errors });
         }
