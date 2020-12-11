@@ -51,6 +51,8 @@ export class PrettyClient {
 
   private loggedIn: boolean = false;
 
+  private lastLogin?: () => Promise<void>;
+
   private challenge?: { id: string, value: string };
 
   constructor(clientOptions: Partial<ClientOptions>) {
@@ -71,13 +73,21 @@ export class PrettyClient {
       this.challenge = eventValue;
     });
 
-    this.lifecycleEmitter.on('disconnect', (disconnectEvent) => {
+    this.lifecycleEmitter.on('disconnect', async (disconnectEvent) => {
       this.loggedIn = false;
       this.stopQueue();
       this.clearQueue();
 
       if (!disconnectEvent.isManual) {
-        this.connect();
+        try {
+          await this.connect();
+
+          if (this.lastLogin) {
+            await this.lastLogin();
+          }
+        } catch (error) {
+          // TODO: Deal with error
+        }
       }
     });
   }
@@ -194,6 +204,7 @@ export class PrettyClient {
       configuration.retries,
     );
 
+    this.lastLogin = () => this.login(username, password, configuration);
     this.loggedIn = true;
   }
 
