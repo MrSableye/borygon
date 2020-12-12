@@ -83,6 +83,9 @@ import { ZPowerEvent, parseZPowerEvent } from './battle/z-power';
 import { ArgsParser } from './parser';
 import { ChallengeEvent, parseChallengeEvent } from './system/challenge';
 import { ChatEvent, parseChatEvent } from './system/chat';
+import { parseDeinitializeRoomEvent, DeinitializeRoomEvent } from './system/deinitialize-room';
+import { parseErrorInitializingRoomEvent, ErrorInitializingRoomEvent } from './system/error-initializing-room';
+import { InitializeRoomEvent, parseInitializeRoomEvent } from './system/initialize-room';
 import { JoinEvent, parseJoinEvent } from './system/join';
 import { LeaveEvent, parseLeaveEvent } from './system/leave';
 import { NameChangeEvent, parseNameChangeEvent } from './system/name-change';
@@ -187,6 +190,9 @@ export interface PokemonShowdownEvents {
   nameChange: NameChangeEvent;
   requestRegistration: RequestRegistrationEvent;
   userCount: UserCountEvent;
+  initializeRoom: InitializeRoomEvent;
+  deinitializeRoom: DeinitializeRoomEvent;
+  errorInitializingRoom: ErrorInitializingRoomEvent;
   default: string[];
 }
 
@@ -292,6 +298,9 @@ export const eventNameToClientEventName: Record<string, keyof PokemonShowdownEve
   name: 'nameChange',
   askreg: 'requestRegistration',
   usercount: 'userCount',
+  init: 'initializeRoom',
+  deinit: 'deinitializeRoom',
+  noinit: 'errorInitializingRoom',
 };
 
 export const getPokemonShowdownEventKey = (key: string): keyof PokemonShowdownEvents => eventNameToClientEventName[key] || 'default';
@@ -394,6 +403,9 @@ export const parsers: PokemonShowdownEventParsers = {
   nameChange: parseNameChangeEvent,
   requestRegistration: parseRequestRegistrationEvent,
   userCount: parseUserCountEvent,
+  initializeRoom: parseInitializeRoomEvent,
+  deinitializeRoom: parseDeinitializeRoomEvent,
+  errorInitializingRoom: parseErrorInitializingRoomEvent,
   default: (input) => ({ value: [input, {}] }),
 };
 
