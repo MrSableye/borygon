@@ -21,6 +21,8 @@ export interface ClientOptions extends Partial<RawClientOptions> {
   connectionRetry: RetryConfiguration;
   actionUrl: string;
   loginRetry: RetryConfiguration;
+  debug: boolean;
+  debugPrefix?: string;
 }
 
 const defaultClientOptions: ClientOptions = {
@@ -28,6 +30,7 @@ const defaultClientOptions: ClientOptions = {
   connectionRetry: { delay: 30 * 1000, retries: Number.POSITIVE_INFINITY },
   actionUrl: 'https://play.pokemonshowdown.com/~~showdown/action.php',
   loginRetry: { delay: 30 * 1000, retries: Number.POSITIVE_INFINITY },
+  debug: false,
 };
 
 type QueuedMessage = [string, () => void];
@@ -74,22 +77,42 @@ export class PrettyClient {
     });
 
     this.lifecycleEmitter.on('disconnect', async (disconnectEvent) => {
-      this.loggedIn = false;
-      this.stopQueue();
-      this.clearQueue();
+      this.debugLog(true, 'Underlying client disconnected, freeing up resources');
+
+      this.disconnect();
 
       if (!disconnectEvent.isManual) {
         try {
+          this.debugLog(false, 'Attempting to automatically reconnect');
+
           await this.connect();
 
           if (this.lastLogin) {
+            this.debugLog(false, 'Attempting to automatically re-login');
+
             await this.lastLogin();
           }
         } catch (error) {
-          // TODO: Deal with error
+          this.debugLog(true, 'Unable to automatically reconnect/re-login', error);
         }
       }
     });
+  }
+
+  private debugLog(isError: boolean, ...args: any[]) {
+    if (this.clientOptions.debug) {
+      let modifiedArgs = args;
+
+      if (this.clientOptions.debugPrefix) {
+        modifiedArgs = [this.clientOptions.debugPrefix, ...modifiedArgs];
+      }
+
+      if (isError) {
+        console.error(...modifiedArgs);
+      } else {
+        console.log(...modifiedArgs);
+      }
+    }
   }
 
   private async attemptConnect() {
@@ -101,8 +124,12 @@ export class PrettyClient {
   private async connectWithRetry(delay: number, retries: number): Promise<void> {
     if (retries > 0) {
       try {
+        this.debugLog(false, `Attempting to connect, ${retries} retries remaining`);
+
         return await this.attemptConnect();
       } catch (error) {
+        this.debugLog(true, `Error connecting, retrying in ${delay} ms`, error);
+
         await wait(delay);
         return this.connectWithRetry(delay, retries - 1);
       }
@@ -114,17 +141,28 @@ export class PrettyClient {
   public async connect(retryConfiguration?: RetryConfiguration) {
     const configuration = retryConfiguration || this.clientOptions.connectionRetry;
 
-    return this.connectWithRetry(
+    this.debugLog(
+      false,
+      `Attempting to connect with ${configuration.retries} and retry delay ${configuration.delay}`,
+    );
+
+    await this.connectWithRetry(
       configuration.delay,
       configuration.retries,
     );
+
+    this.debugLog(false, 'Successfully connected');
   }
 
   public disconnect(): void {
+    this.debugLog(false, 'Attempting to disconnect');
+
     this.loggedIn = false;
     this.stopQueue();
     this.clearQueue();
     this.rawClient.disconnect();
+
+    this.debugLog(false, 'Successfully disconnected');
   }
 
   public isConnected() {
@@ -137,7 +175,8 @@ export class PrettyClient {
 
   private async attemptLogin(username: string, password: string): Promise<void> {
     if (!this.challenge) {
-      // TODO: Make this process more streamlined
+      this.debugLog(false, 'No login challenge challenged received yet, awaiting challenge');
+
       try {
         await new Promise<void>((resolve, reject) => {
           this.eventEmitter.on('challenge', () => resolve());
@@ -146,6 +185,8 @@ export class PrettyClient {
 
         return this.attemptLogin(username, password);
       } catch (error) {
+        this.debugLog(true, 'Error awaiting challenge');
+
         return Promise.reject(new Error('Challenge not received yet'));
       }
     }
@@ -158,14 +199,20 @@ export class PrettyClient {
       challenge: this.challenge.value,
     };
 
+    this.debugLog(false, 'Attempting login to login server');
+
     const loginResponse = await axios.post<string>(
       this.clientOptions.actionUrl,
       qs.stringify(data),
     );
 
+    this.debugLog(false, 'Successfully received login response from login server');
+
     const login = JSON.parse(loginResponse.data.substr(1));
 
     if (login.actionsuccess && login.assertion) { // TODO: Handle
+      this.debugLog(false, 'Received login success from login server');
+
       return this.send(`|/trn ${username},0,${login.assertion}`); // TODO: Middle value is avatar
     }
 
@@ -180,8 +227,12 @@ export class PrettyClient {
   ) {
     if (retries > 0) {
       try {
+        this.debugLog(false, `Attempting to login, ${retries} retries remaining`);
+
         return await this.attemptLogin(username, password);
       } catch (error) {
+        this.debugLog(true, `Error logging in, retrying in ${delay} ms`, error);
+
         await wait(delay);
         return this.connectWithRetry(delay, retries - 1);
       }
@@ -197,6 +248,11 @@ export class PrettyClient {
   ) {
     const configuration = retryConfiguration || this.clientOptions.loginRetry;
 
+    this.debugLog(
+      false,
+      `Attempting to login with ${configuration.retries} and retry delay ${configuration.delay}`,
+    );
+
     await this.loginWithRetry(
       username,
       password,
@@ -206,6 +262,9 @@ export class PrettyClient {
 
     this.lastLogin = () => this.login(username, password, configuration);
     this.loggedIn = true;
+    this.challenge = undefined;
+
+    this.debugLog(false, 'Successfully logged in');
   }
 
   public async logout(userid: string) {
@@ -214,14 +273,20 @@ export class PrettyClient {
       userid,
     };
 
-    const loginResponse = await axios.post<string>(
+    this.debugLog(false, 'Attempting logout to login server');
+
+    const logoutResponse = await axios.post<string>(
       this.clientOptions.actionUrl,
       qs.stringify(data),
     );
 
-    const logout = JSON.parse(loginResponse.data.substr(1));
+    this.debugLog(false, 'Successfully received logout response from login server');
+
+    const logout = JSON.parse(logoutResponse.data.substr(1));
 
     if (logout.actionsuccess) {
+      this.debugLog(false, 'Received logout success from login server');
+
       this.loggedIn = false;
     }
   }

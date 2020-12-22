@@ -6,4 +6,6 @@ import {
 // `|deinit
 export const deinitializeRoomEventType = t.type({});
 export type DeinitializeRoomEvent = t.TypeOf<typeof deinitializeRoomEventType>;
-export const parseDeinitializeRoomEvent: ArgsParser<DeinitializeRoomEvent> = () => ({ value: [{}, {}] });
+export const parseDeinitializeRoomEvent: ArgsParser<DeinitializeRoomEvent> = () => ({
+  value: [{}, {}],
+});

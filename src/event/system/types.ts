@@ -23,7 +23,9 @@ export const roomInitializationErrorTypeType = t.keyof({
   namerequired: true,
 });
 export type RoomInitializationErrorType = t.TypeOf<typeof roomInitializationErrorTypeType>;
-export const parseRoomInitializationErrorType: Parser<RoomInitializationErrorType> = (input: string) => {
+export const parseRoomInitializationErrorType: Parser<RoomInitializationErrorType> = (
+  input: string,
+) => {
   if ((roomInitializationErrorTypeType.keys as any)[input]) {
     return { value: input as RoomInitializationErrorType };
   }
