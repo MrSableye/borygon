@@ -5,7 +5,6 @@ import {
 } from '../parser';
 import {
   gameTypeType,
-
   parseGameType,
 } from './types';
 

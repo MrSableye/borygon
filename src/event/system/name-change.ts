@@ -2,17 +2,20 @@ import * as t from 'io-ts';
 import {
   createSchemaParser,
   KeySchema,
-  parseString,
 } from '../parser';
+import {
+  parseUser,
+  userType,
+} from './types';
 
 // `|name, n, N|USER|OLDID
 export const nameChangeEventType = t.type({
-  newUsername: t.string,
-  oldUsername: t.string,
+  newUser: userType,
+  oldUser: userType,
 });
 export type NameChangeEvent = t.TypeOf<typeof nameChangeEventType>;
 export const nameChangeEventSchema: KeySchema<NameChangeEvent> = [
-  ['newUsername', parseString],
-  ['oldUsername', parseString],
+  ['newUser', parseUser],
+  ['oldUser', parseUser],
 ];
 export const parseNameChangeEvent = createSchemaParser(nameChangeEventType, nameChangeEventSchema);

@@ -6,7 +6,6 @@ import {
 } from '../parser';
 import {
   parsePlayer,
-
   playerType,
 } from './types';
 

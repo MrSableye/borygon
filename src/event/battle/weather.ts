@@ -5,7 +5,6 @@ import {
 } from '../parser';
 import {
   parseWeather,
-
   weatherType,
 } from './types';
 

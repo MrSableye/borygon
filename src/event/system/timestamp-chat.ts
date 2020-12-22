@@ -5,17 +5,21 @@ import {
   parseNumber,
   parseString,
 } from '../parser';
+import {
+  parseUser,
+  userType,
+} from './types';
 
 // `|c:|TIMESTAMP|USERNAME|MESSAGE
 export const timestampChatEventType = t.type({
   timestamp: t.number,
-  username: t.string,
+  user: userType,
   message: t.string,
 });
 export type TimestampChatEvent = t.TypeOf<typeof timestampChatEventType>;
 export const timestampChatEventSchema: KeySchema<TimestampChatEvent> = [
   ['timestamp', parseNumber],
-  ['username', parseString],
+  ['user', parseUser],
   ['message', parseString],
 ];
 export const parseTimestampChatEvent = createSchemaParser(

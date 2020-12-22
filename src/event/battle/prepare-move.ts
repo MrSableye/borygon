@@ -3,12 +3,10 @@ import {
   createOptionalParser,
   createSchemaParser,
   KeySchema,
-
   parseString,
 } from '../parser';
 import {
   parsePokemon,
-
   pokemonType,
 } from './types';
 

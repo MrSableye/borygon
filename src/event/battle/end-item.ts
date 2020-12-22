@@ -2,12 +2,10 @@ import * as t from 'io-ts';
 import {
   createSchemaParser,
   KeySchema,
-
   parseString,
 } from '../parser';
 import {
   parsePokemon,
-
   pokemonType,
 } from './types';
 

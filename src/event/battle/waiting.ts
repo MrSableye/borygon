@@ -5,7 +5,6 @@ import {
 } from '../parser';
 import {
   parsePokemon,
-
   pokemonType,
 } from './types';
 

@@ -32,3 +32,25 @@ export const parseRoomInitializationErrorType: Parser<RoomInitializationErrorTyp
 
   return { errors: [`${input} is not a valid RoomInitializationErrorType`] };
 };
+
+export const userType = t.type({
+  group: t.string,
+  username: t.string,
+});
+export type User = t.TypeOf<typeof userType>;
+export const parseUser: Parser<User> = (input: string) => {
+  if (!/[A-Za-z0-9]/.test(input.charAt(0))) {
+    return {
+      value: {
+        group: input.charAt(0),
+        username: input.slice(1),
+      },
+    };
+  }
+  return {
+    value: {
+      group: ' ',
+      username: input,
+    },
+  };
+};

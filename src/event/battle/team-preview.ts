@@ -5,9 +5,7 @@ import {
 } from '../parser';
 import {
   parsePlayer,
-
   parsePokemonDetails,
-
   playerType,
   pokemonDetailsType,
 } from './types';

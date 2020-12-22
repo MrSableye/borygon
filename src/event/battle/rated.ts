@@ -3,7 +3,6 @@ import {
   createOptionalParser,
   createSchemaParser,
   KeySchema,
-
   parseString,
 } from '../parser';
 

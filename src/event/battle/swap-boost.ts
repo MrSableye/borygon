@@ -1,17 +1,13 @@
 import * as t from 'io-ts';
 import {
   createArrayParser,
-
   createSchemaParser,
   KeySchema,
 } from '../parser';
 import {
   parsePokemon,
-
   parseStat,
-
   pokemonType,
-
   statType,
 } from './types';
 

@@ -4,15 +4,19 @@ import {
   KeySchema,
   parseString,
 } from '../parser';
+import {
+  parseUser,
+  userType,
+} from './types';
 
 // `|chat|USERNAME|MESSAGE
 export const chatEventType = t.type({
-  username: t.string,
+  user: userType,
   message: t.string,
 });
 export type ChatEvent = t.TypeOf<typeof chatEventType>;
 export const chatEventSchema: KeySchema<ChatEvent> = [
-  ['username', parseString],
+  ['user', parseUser],
   ['message', parseString],
 ];
 export const parseChatEvent = createSchemaParser(

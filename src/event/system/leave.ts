@@ -2,15 +2,18 @@ import * as t from 'io-ts';
 import {
   createSchemaParser,
   KeySchema,
-  parseString,
 } from '../parser';
+import {
+  parseUser,
+  userType,
+} from './types';
 
 // `|leave(l,L)|USERNAME
 export const leaveEventType = t.type({
-  username: t.string,
+  user: userType,
 });
 export type LeaveEvent = t.TypeOf<typeof leaveEventType>;
 export const leaveEventSchema: KeySchema<LeaveEvent> = [
-  ['username', parseString],
+  ['user', parseUser],
 ];
 export const parseLeaveEvent = createSchemaParser(leaveEventType, leaveEventSchema);

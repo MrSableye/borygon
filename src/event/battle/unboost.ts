@@ -6,11 +6,8 @@ import {
 } from '../parser';
 import {
   parsePokemon,
-
   parseStat,
-
   pokemonType,
-
   statType,
 } from './types';
 

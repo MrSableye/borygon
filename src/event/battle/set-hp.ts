@@ -5,11 +5,8 @@ import {
 } from '../parser';
 import {
   hpType,
-
   parseHp,
-
   parsePokemon,
-
   pokemonType,
 } from './types';
 
