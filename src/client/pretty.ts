@@ -21,6 +21,7 @@ export interface ClientOptions extends Partial<RawClientOptions> {
   connectionRetry: RetryConfiguration;
   actionUrl: string;
   loginRetry: RetryConfiguration;
+  challengeDelay: number;
   debug: boolean;
   debugPrefix?: string;
 }
@@ -30,6 +31,7 @@ const defaultClientOptions: ClientOptions = {
   connectionRetry: { delay: 30 * 1000, retries: Number.POSITIVE_INFINITY },
   actionUrl: 'https://play.pokemonshowdown.com/~~showdown/action.php',
   loginRetry: { delay: 30 * 1000, retries: Number.POSITIVE_INFINITY },
+  challengeDelay: 200,
   debug: false,
 };
 
@@ -143,7 +145,7 @@ export class PrettyClient {
 
     this.debugLog(
       false,
-      `Attempting to connect with ${configuration.retries} and retry delay ${configuration.delay}`,
+      `Attempting to connect with ${configuration.retries} and retry delay ${configuration.delay} ms`,
     );
 
     await this.connectWithRetry(
@@ -173,17 +175,17 @@ export class PrettyClient {
     return this.loggedIn;
   }
 
-  private async attemptLogin(username: string, password: string): Promise<void> {
+  private async attemptLogin(username: string, password: string, avatar: string): Promise<void> {
     if (!this.challenge) {
-      this.debugLog(false, 'No login challenge challenged received yet, awaiting challenge');
+      this.debugLog(false, `No login challenge received yet, waiting ${this.clientOptions.challengeDelay} ms for challenge`);
 
       try {
         await new Promise<void>((resolve, reject) => {
           this.eventEmitter.on('challenge', () => resolve());
-          wait(200).then(() => reject()); // TODO: Configure this delay
+          wait(this.clientOptions.challengeDelay).then(() => reject());
         });
 
-        return this.attemptLogin(username, password);
+        return this.attemptLogin(username, password, avatar);
       } catch (error) {
         this.debugLog(true, 'Error awaiting challenge');
 
@@ -210,18 +212,19 @@ export class PrettyClient {
 
     const login = JSON.parse(loginResponse.data.substr(1));
 
-    if (login.actionsuccess && login.assertion) { // TODO: Handle
+    if (login.actionsuccess && login.assertion) {
       this.debugLog(false, 'Received login success from login server');
 
-      return this.send(`|/trn ${username},0,${login.assertion}`); // TODO: Middle value is avatar
+      return this.send(`|/trn ${username},${avatar},${login.assertion}`);
     }
 
-    return Promise.reject(new Error('Invalid login response')); // TODO: Improve
+    return Promise.reject(new Error('Invalid login response'));
   }
 
   private async loginWithRetry(
     username: string,
     password: string,
+    avatar: string,
     delay: number,
     retries: number,
   ) {
@@ -229,7 +232,7 @@ export class PrettyClient {
       try {
         this.debugLog(false, `Attempting to login, ${retries} retries remaining`);
 
-        return await this.attemptLogin(username, password);
+        return await this.attemptLogin(username, password, avatar);
       } catch (error) {
         this.debugLog(true, `Error logging in, retrying in ${delay} ms`, error);
 
@@ -244,23 +247,30 @@ export class PrettyClient {
   public async login(
     username: string,
     password: string,
+    avatar: string = '1',
     retryConfiguration?: RetryConfiguration,
   ) {
     const configuration = retryConfiguration || this.clientOptions.loginRetry;
 
     this.debugLog(
       false,
-      `Attempting to login with ${configuration.retries} and retry delay ${configuration.delay}`,
+      `Attempting to login with ${configuration.retries} and retry delay ${configuration.delay} ms`,
+    );
+
+    this.debugLog(
+      false,
+      `Logging in with username: ${username}, password: ${password.replace(/./g, '*')}, avatar: ${avatar}`,
     );
 
     await this.loginWithRetry(
       username,
       password,
+      avatar,
       configuration.delay,
       configuration.retries,
     );
 
-    this.lastLogin = () => this.login(username, password, configuration);
+    this.lastLogin = () => this.login(username, password, avatar, configuration);
     this.loggedIn = true;
     this.challenge = undefined;
 
