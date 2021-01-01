@@ -90,6 +90,7 @@ import { JoinEvent, parseJoinEvent } from './system/join';
 import { LeaveEvent, parseLeaveEvent } from './system/leave';
 import { NameChangeEvent, parseNameChangeEvent } from './system/name-change';
 import { PmEvent, parsePmEvent } from './system/pm';
+import { parseQueryResponseEvent, QueryResponseEvent } from './system/query-response';
 import { RawEvent, parseRawEvent } from './system/raw';
 import { parseRequestRegistrationEvent, RequestRegistrationEvent } from './system/request-registration';
 import { parseTimestampChatEvent, TimestampChatEvent } from './system/timestamp-chat';
@@ -193,6 +194,7 @@ export interface PokemonShowdownEvents {
   initializeRoom: InitializeRoomEvent;
   deinitializeRoom: DeinitializeRoomEvent;
   errorInitializingRoom: ErrorInitializingRoomEvent;
+  queryResponse: QueryResponseEvent;
   default: string[];
 }
 
@@ -301,6 +303,7 @@ export const eventNameToClientEventName: Record<string, keyof PokemonShowdownEve
   init: 'initializeRoom',
   deinit: 'deinitializeRoom',
   noinit: 'errorInitializingRoom',
+  queryresponse: 'queryResponse',
 };
 
 export const getPokemonShowdownEventKey = (key: string): keyof PokemonShowdownEvents => eventNameToClientEventName[key] || 'default';
@@ -406,6 +409,7 @@ export const parsers: PokemonShowdownEventParsers = {
   initializeRoom: parseInitializeRoomEvent,
   deinitializeRoom: parseDeinitializeRoomEvent,
   errorInitializingRoom: parseErrorInitializingRoomEvent,
+  queryResponse: parseQueryResponseEvent,
   default: (input) => ({ value: [input, {}] }),
 };
 

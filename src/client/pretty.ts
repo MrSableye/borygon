@@ -38,6 +38,7 @@ const defaultClientOptions: ClientOptions = {
 type QueuedMessage = [string, () => void];
 
 const wait = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
+const waitToReject = (delay: number) => new Promise((resolve, reject) => setTimeout(reject, delay));
 
 export class PrettyClient {
   private readonly rawClient: RawClient;
@@ -338,5 +339,22 @@ export class PrettyClient {
     });
 
     return promise;
+  }
+
+  public receive<K extends keyof RoomEvents>(
+    roomEventName: K,
+    timeout?: number,
+    predicate?: (event: RoomEvents[K]) => boolean,
+  ) {
+    return Promise.race([
+      new Promise((resolve) => {
+        this.eventEmitter.on(roomEventName, (roomEvent) => {
+          if (!predicate || predicate(roomEvent)) {
+            resolve(roomEvent);
+          }
+        });
+      }),
+      timeout ? waitToReject(timeout) : undefined,
+    ]);
   }
 }
