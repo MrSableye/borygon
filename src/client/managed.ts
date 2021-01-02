@@ -2,9 +2,9 @@ import axios from 'axios';
 import qs from 'querystring';
 import Emittery from 'emittery';
 import {
-  RawClient,
   RawClientOptions,
   RawLifecycleEvents,
+  RawShowdownClient,
 } from './raw';
 import {
   EventError,
@@ -42,8 +42,8 @@ const waitToReject = (
   delay: number,
 ) => new Promise<never>((resolve, reject) => setTimeout(reject, delay));
 
-export class PrettyClient {
-  private readonly rawClient: RawClient;
+export class ManagedShowdownClient {
+  private readonly rawClient: RawShowdownClient;
 
   private readonly clientOptions: ClientOptions;
 
@@ -69,7 +69,7 @@ export class PrettyClient {
       ...clientOptions,
     };
 
-    this.rawClient = new RawClient(clientOptions);
+    this.rawClient = new RawShowdownClient(clientOptions);
     this.eventEmitter = this.rawClient.eventEmitter;
     this.lifecycleEmitter = this.rawClient.lifecycleEmitter;
     this.eventErrorEmitter = this.rawClient.eventErrorEmitter;

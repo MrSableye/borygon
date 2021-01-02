@@ -1,6 +1,6 @@
 import {
-  PrettyClient,
-  RawClient,
+  ManagedShowdownClient,
+  RawShowdownClient,
 } from './client';
 import {
   eventNameToClientEventName,
@@ -18,6 +18,6 @@ export {
   pokemonShowdownEventNames,
   PokemonShowdownEventParsers,
   PokemonShowdownEvents,
-  PrettyClient,
-  RawClient,
+  ManagedShowdownClient,
+  RawShowdownClient,
 };

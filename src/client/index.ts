@@ -1,4 +1,4 @@
-import { PrettyClient } from './pretty';
-import { RawClient } from './raw';
+import { ManagedShowdownClient } from './managed';
+import { RawShowdownClient } from './raw';
 
-export { PrettyClient, RawClient };
+export { ManagedShowdownClient, RawShowdownClient };

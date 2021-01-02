@@ -32,7 +32,7 @@ const defaultClientOptions: RawClientOptions = {
   port: 443,
 };
 
-export class RawClient {
+export class RawShowdownClient {
   private readonly clientOptions: RawClientOptions;
 
   readonly eventEmitter: Emittery.Typed<RoomEvents>;
