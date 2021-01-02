@@ -38,7 +38,9 @@ const defaultClientOptions: ClientOptions = {
 type QueuedMessage = [string, () => void];
 
 const wait = (delay: number) => new Promise<void>((resolve) => setTimeout(resolve, delay));
-const waitToReject = (delay: number) => new Promise<never>((resolve, reject) => setTimeout(reject, delay));
+const waitToReject = (
+  delay: number,
+) => new Promise<never>((resolve, reject) => setTimeout(reject, delay));
 
 export class PrettyClient {
   private readonly rawClient: RawClient;
