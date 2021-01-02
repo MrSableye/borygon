@@ -37,8 +37,8 @@ const defaultClientOptions: ClientOptions = {
 
 type QueuedMessage = [string, () => void];
 
-const wait = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
-const waitToReject = (delay: number) => new Promise((resolve, reject) => setTimeout(reject, delay));
+const wait = (delay: number) => new Promise<void>((resolve) => setTimeout(resolve, delay));
+const waitToReject = (delay: number) => new Promise<never>((resolve, reject) => setTimeout(reject, delay));
 
 export class PrettyClient {
   private readonly rawClient: RawClient;
@@ -341,20 +341,31 @@ export class PrettyClient {
     return promise;
   }
 
-  public receive<K extends keyof RoomEvents>(
+  private receiveWithoutDelay<K extends keyof RoomEvents>(
+    roomEventName: K,
+    predicate?: (event: RoomEvents[K]) => boolean,
+  ): Promise<RoomEvents[K]> {
+    return new Promise<RoomEvents[K]>((resolve) => {
+      this.eventEmitter.on(roomEventName, (roomEvent) => {
+        if (!predicate || predicate(roomEvent)) {
+          resolve(roomEvent);
+        }
+      });
+    });
+  }
+
+  public async receive<K extends keyof RoomEvents>(
     roomEventName: K,
     timeout?: number,
     predicate?: (event: RoomEvents[K]) => boolean,
-  ) {
-    return Promise.race([
-      new Promise((resolve) => {
-        this.eventEmitter.on(roomEventName, (roomEvent) => {
-          if (!predicate || predicate(roomEvent)) {
-            resolve(roomEvent);
-          }
-        });
-      }),
-      timeout ? waitToReject(timeout) : undefined,
-    ]);
+  ): Promise<RoomEvents[K]> {
+    if (timeout) {
+      return Promise.race([
+        this.receiveWithoutDelay(roomEventName, predicate),
+        waitToReject(timeout),
+      ]);
+    }
+
+    return this.receiveWithoutDelay(roomEventName, predicate);
   }
 }
