@@ -1,6 +1,9 @@
 {
   "name": "@showderp/pokemon-showdown-ts",
   "version": "0.2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "A TypeScript client for interacting with Pokémon Showdown",
   "repository": "showderp/pokemon-showdown-ts",
   "main": "dist/index.js",

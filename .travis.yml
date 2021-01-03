@@ -1,0 +1,23 @@
+language: node_js
+node_js:
+- node
+script:
+- npm run lint
+- npm run build
+deploy:
+  provider: npm
+  email: $NPM_EMAIL
+  api_key:
+    secure: RqyGRxs4zteIfVtmrA6Wz2DEKMhFJEcsKRvsG1S8jCihRgE/mtLeq03s/0+fQTU4shYZh9CPmZsrjQz1cM5s7T0vo7qMab2i5P7ywf3V+mKEHqzoB5Yf0HbJURl2T1tYqW0mzmUMgR+ngN9KfJ1LEvhtJI7TSj6k8fIfnloGAEMOuKzOJ+SUOcrvhkw6mr0oY8sa90fRTJeHvHbu2vLQHz1BvagbfZNW0I6AxPJjjAbTyVuTfINRKepiclCSckr0gxciN1AgSloXfIeeURSaW3GMxpF9Vz7AH9WB6w7wZ+YC8ZW1kJU1qVEJOm7cU/DqBsjMfK3CKJKWguFDprKuDgtSTRNrw1Q4sMx7q2e9rCwfef3PgFtczb3srBbXJKQ2BZ6ArYTgQ8I1316PBpPvGPpRcRcDJNpXNNrxKr39PftZWnr+YhzkeYRyv/WBtGkkcG417j2kHRLsmMx0rA1z8X8DtJ4sVstz8ewfhaNCm8o6x26VUXFYigAG+LaHtoxM0AGyN1cGL9Iu3v/0aKS2z+2zfMRM8nMnmVh6hXaJwP/SMn1N/YpnV/IAdOthEyVW6Q3fiWef+JDJeeF/mxJPQb2Zg0+UQRpJuri42tGQ5qSN3YXryIN5Wj7lAOdPXy8YfDFliTWn2l70QfOxmWW1XU14XXjTEIIIWfa4yksSE0c=
+  skip_cleanup: true
+  on:
+    branch: production
+    tags: true
+after_success:
+- wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+- chmod +x send.sh
+- ./send.sh success $WEBHOOK_URL
+after_failure:
+- wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+- chmod +x send.sh
+- ./send.sh failure $WEBHOOK_URL
