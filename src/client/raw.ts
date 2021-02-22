@@ -58,32 +58,45 @@ export class RawShowdownClient {
 
     this.socket = new WebSocket(websocketUrl);
 
-    this.socket.onopen = () => {
+    this.socket.addEventListener('open', () => {
       this.lifecycleEmitter.emit('connect', 'meme'); // TODO
-    };
+    });
 
-    this.socket.onmessage = (messageEvent) => {
+    this.socket.addEventListener('message', (messageEvent) => {
       this.handleData(messageEvent.data.toString());
-    };
+    });
 
-    this.socket.onclose = (closeEvent) => {
+    this.socket.addEventListener('close', (closeEvent) => {
       this.lifecycleEmitter.emit('disconnect', {
         isManual: closeEvent.code === manualCloseCode,
         isError: false,
       });
-    };
+    });
 
-    this.socket.onerror = () => {
+    this.socket.addEventListener('error', () => {
       this.lifecycleEmitter.emit('disconnect', {
         isManual: false,
         isError: true,
       });
-    };
+    });
 
     return new Promise((resolve, reject) => {
-      this.socket?.once('open', () => resolve());
-      this.socket?.once('close', () => reject());
-      this.socket?.once('error', () => reject());
+      const openListener = () => {
+        this.socket?.removeEventListener('open', openListener);
+        resolve();
+      };
+      const closeListener = () => {
+        this.socket?.removeEventListener('close', closeListener);
+        reject();
+      };
+      const errorListener = () => {
+        this.socket?.removeEventListener('error', errorListener);
+        reject();
+      };
+
+      this.socket?.addEventListener('open', openListener);
+      this.socket?.addEventListener('close', closeListener);
+      this.socket?.addEventListener('error', errorListener);
       // TODO: Add connection timeout?
     });
   }
