@@ -24,6 +24,7 @@ export interface ClientOptions extends Partial<RawClientOptions> {
   challengeDelay: number;
   debug: boolean;
   debugPrefix?: string;
+  loginParams?: { [key: string]: string };
 }
 
 const defaultClientOptions: ClientOptions = {
@@ -201,6 +202,7 @@ export class ManagedShowdownClient {
     }
 
     const data = {
+      ...this.clientOptions.loginParams,
       act: 'login',
       name: username,
       pass: password,
@@ -287,6 +289,7 @@ export class ManagedShowdownClient {
 
   public async logout(userid: string) {
     const data = {
+      ...this.clientOptions.loginParams,
       act: 'logout',
       userid,
     };
