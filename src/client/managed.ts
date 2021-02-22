@@ -206,6 +206,7 @@ export class ManagedShowdownClient {
       pass: password,
       challengekeyid: this.challenge.id,
       challenge: this.challenge.value,
+      sid: 'sneed',
     };
 
     this.debugLog(false, 'Attempting login to login server');
