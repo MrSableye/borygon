@@ -58,27 +58,27 @@ export class RawShowdownClient {
 
     this.socket = new WebSocket(websocketUrl);
 
-    this.socket.on('open', () => {
+    this.socket.onopen = () => {
       this.lifecycleEmitter.emit('connect', 'meme'); // TODO
-    });
+    };
 
-    this.socket.on('message', (data: WebSocket.Data) => {
-      this.handleData(data.toString());
-    });
+    this.socket.onmessage = (messageEvent) => {
+      this.handleData(messageEvent.toString());
+    };
 
-    this.socket.on('close', (socket: WebSocket, code: number) => {
+    this.socket.onclose = (closeEvent) => {
       this.lifecycleEmitter.emit('disconnect', {
-        isManual: code === manualCloseCode,
+        isManual: closeEvent.code === manualCloseCode,
         isError: false,
       });
-    });
+    };
 
-    this.socket.on('error', () => {
+    this.socket.onerror = () => {
       this.lifecycleEmitter.emit('disconnect', {
         isManual: false,
         isError: true,
       });
-    });
+    };
 
     return new Promise((resolve, reject) => {
       this.socket?.once('open', () => resolve());
