@@ -178,6 +178,10 @@ export class ManagedShowdownClient {
     return this.loggedIn;
   }
 
+  public async forceLogin(assertionCommand: string): Promise<void> {
+    return this.send(assertionCommand);
+  }
+
   private async attemptLogin(username: string, password: string, avatar: string): Promise<void> {
     if (!this.challenge) {
       this.debugLog(false, `No login challenge received yet, waiting ${this.clientOptions.challengeDelay} ms for challenge`);
@@ -218,7 +222,7 @@ export class ManagedShowdownClient {
     if (login.actionsuccess && login.assertion) {
       this.debugLog(false, 'Received login success from login server');
 
-      return this.send(`|/trn ${username},${avatar},${login.assertion}`);
+      return this.forceLogin(`|/trn ${username},${avatar},${login.assertion}`);
     }
 
     return Promise.reject(new Error('Invalid login response'));
