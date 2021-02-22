@@ -1,6 +1,6 @@
 {
   "name": "@showderp/pokemon-showdown-ts",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publishConfig": {
     "access": "public"
   },
@@ -20,6 +20,7 @@
     "emittery": "^0.7.2",
     "fp-ts": "^2.8.6",
     "io-ts": "^2.2.13",
+    "isomorphic-ws": "^4.0.1",
     "querystring": "^0.2.0",
     "ws": "^7.4.0"
   },
