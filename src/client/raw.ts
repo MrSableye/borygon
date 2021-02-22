@@ -63,7 +63,7 @@ export class RawShowdownClient {
     };
 
     this.socket.onmessage = (messageEvent) => {
-      this.handleData(messageEvent.toString());
+      this.handleData(messageEvent.data.toString());
     };
 
     this.socket.onclose = (closeEvent) => {
