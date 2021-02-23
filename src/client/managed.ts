@@ -132,8 +132,7 @@ export class ManagedShowdownClient {
       try {
         this.debugLog(false, `Attempting to connect, ${retries} retries remaining`);
 
-        await this.attemptConnect();
-        return;
+        return await this.attemptConnect();
       } catch (error) {
         this.debugLog(true, `Error connecting, retrying in ${delay} ms`, error);
 
@@ -238,18 +237,23 @@ export class ManagedShowdownClient {
     avatar: string,
     delay: number,
     retries: number,
-  ) {
+  ): Promise<void> {
     if (retries > 0) {
       try {
         this.debugLog(false, `Attempting to login, ${retries} retries remaining`);
 
-        await this.attemptLogin(username, password, avatar);
-        return;
+        return await this.attemptLogin(username, password, avatar);
       } catch (error) {
         this.debugLog(true, `Error logging in, retrying in ${delay} ms`, error);
 
         await wait(delay);
-        return this.connectWithRetry(delay, retries - 1);
+        return await this.loginWithRetry(
+          username,
+          password,
+          avatar,
+          delay,
+          retries - 1,
+        );
       }
     }
 
