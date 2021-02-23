@@ -1,6 +1,8 @@
 import {
+  EventError,
   ManagedShowdownClient,
   RawShowdownClient,
+  RoomEvents,
 } from './client';
 import {
   eventNameToClientEventName,
@@ -12,6 +14,7 @@ import {
 } from './event';
 
 export {
+  EventError,
   eventNameToClientEventName,
   getPokemonShowdownEventKey,
   parsers,
@@ -20,4 +23,5 @@ export {
   PokemonShowdownEvents,
   ManagedShowdownClient,
   RawShowdownClient,
+  RoomEvents,
 };

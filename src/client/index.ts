@@ -1,4 +1,10 @@
 import { ManagedShowdownClient } from './managed';
 import { RawShowdownClient } from './raw';
+import { EventError, RoomEvents } from './types';
 
-export { ManagedShowdownClient, RawShowdownClient };
+export {
+  EventError,
+  ManagedShowdownClient,
+  RawShowdownClient,
+  RoomEvents,
+};
