@@ -141,7 +141,7 @@ export class ManagedShowdownClient {
       }
     }
 
-    return Promise.reject(new Error('Exceeded connection retries'));
+    throw new Error('Exceeded connection retries');
   }
 
   public async connect(retryConfiguration?: RetryConfiguration) {
@@ -197,7 +197,7 @@ export class ManagedShowdownClient {
       } catch (error) {
         this.debugLog(true, 'Error awaiting challenge');
 
-        return Promise.reject(new Error('Challenge not received yet'));
+        throw new Error('Challenge not received yet');
       }
     }
 
@@ -228,7 +228,7 @@ export class ManagedShowdownClient {
       return this.forceLogin(`|/trn ${username},${avatar},${login.assertion}`);
     }
 
-    return Promise.reject(new Error('Invalid login response'));
+    throw new Error('Invalid login response');
   }
 
   private async loginWithRetry(
@@ -251,7 +251,7 @@ export class ManagedShowdownClient {
       }
     }
 
-    return Promise.reject(new Error('Exceeded login retries'));
+    throw new Error('Exceeded login retries');
   }
 
   public async login(
