@@ -9,7 +9,7 @@ import {
   RoomEvents,
 } from './types';
 
-const manualCloseCode = 6969;
+const manualCloseCode = 4200;
 
 interface DisconnectEvent {
   isManual: boolean;
