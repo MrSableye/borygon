@@ -1,6 +1,7 @@
 import axios from 'axios';
 import qs from 'querystring';
 import Emittery from 'emittery';
+import PriorityQueue from 'priorityqueuejs';
 import {
   RawClientOptions,
   RawLifecycleEvents,
@@ -36,7 +37,20 @@ const defaultClientOptions: ClientOptions = {
   debug: false,
 };
 
-type QueuedMessage = [string, () => void];
+interface QueuedMessage {
+  message: string;
+  priority: number;
+  timestamp: number;
+  resolve: () => void;
+}
+
+const createMessageQueue = () => new PriorityQueue<QueuedMessage>((messageA, messageB) => {
+  if ((messageA.priority - messageB.priority) !== 0) {
+    return messageA.priority - messageB.priority;
+  }
+
+  return messageB.timestamp - messageA.timestamp;
+});
 
 const wait = (delay: number) => new Promise<void>((resolve) => setTimeout(resolve, delay));
 const waitToReject = (
@@ -54,7 +68,7 @@ export class ManagedShowdownClient {
 
   readonly eventErrorEmitter: Emittery.Typed<EventError>;
 
-  private queuedMessages: QueuedMessage[];
+  private messageQueue: PriorityQueue<QueuedMessage>;
 
   private messageQueueInterval?: NodeJS.Timeout;
 
@@ -75,7 +89,7 @@ export class ManagedShowdownClient {
     this.lifecycleEmitter = this.rawClient.lifecycleEmitter;
     this.eventErrorEmitter = this.rawClient.eventErrorEmitter;
 
-    this.queuedMessages = [];
+    this.messageQueue = createMessageQueue();
     this.loggedIn = false;
 
     this.eventEmitter.on('challenge', ({ event: [eventValue] }) => {
@@ -247,7 +261,7 @@ export class ManagedShowdownClient {
         this.debugLog(true, `Error logging in, retrying in ${delay} ms`, error);
 
         await wait(delay);
-        return await this.loginWithRetry(
+        return this.loginWithRetry(
           username,
           password,
           avatar,
@@ -326,10 +340,10 @@ export class ManagedShowdownClient {
         return;
       }
 
-      const message = this.queuedMessages.splice(0, 3);
-      for (let index = 0; index < message.length; index += 1) {
-        this.sendQueued(message[index]);
-      }
+      try {
+        const message = this.messageQueue.deq();
+        this.sendQueued(message);
+      } catch (error) {} // eslint-disable-line no-empty
     }, this.clientOptions.throttle);
   }
 
@@ -341,17 +355,23 @@ export class ManagedShowdownClient {
   }
 
   public clearQueue() {
-    this.queuedMessages = [];
+    this.messageQueue = createMessageQueue();
   }
 
   private sendQueued(queuedMessage: QueuedMessage) {
-    this.rawClient.send(queuedMessage[0]);
-    queuedMessage[1]();
+    const { message, resolve } = queuedMessage;
+    this.rawClient.send(message);
+    resolve();
   }
 
-  public async send(message: string) {
+  public async send(message: string, priority: number = 0) {
     const promise = new Promise<void>((resolve) => {
-      this.queuedMessages.push([message, resolve]);
+      this.messageQueue.enq({
+        message,
+        priority,
+        timestamp: Date.now(),
+        resolve,
+      });
     });
 
     return promise;

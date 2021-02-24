@@ -1,6 +1,6 @@
 {
   "name": "@showderp/pokemon-showdown-ts",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "publishConfig": {
     "access": "public"
   },
@@ -16,16 +16,18 @@
   "author": "Mr. Sableye <mister.sableye@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "emittery": "^0.7.2",
     "fp-ts": "^2.8.6",
     "io-ts": "^2.2.13",
     "isomorphic-ws": "^4.0.1",
+    "priorityqueuejs": "^2.0.0",
     "querystring": "^0.2.0",
     "ws": "^7.4.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.10",
+    "@types/priorityqueuejs": "^1.0.1",
     "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^4.4.1",
     "@typescript-eslint/parser": "^4.9.0",
