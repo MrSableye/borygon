@@ -241,7 +241,7 @@ export const eventNameToClientEventName: Record<string, keyof PokemonShowdownEve
   '-cureteam': 'cureTeam',
   '-boost': 'boost',
   '-unboost': 'unboost',
-  '-setboot': 'setBoost',
+  '-setboost': 'setBoost',
   '-swapboost': 'swapBoost',
   '-invertboost': 'invertBoost',
   '-clearboost': 'clearBoost',
