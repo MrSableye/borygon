@@ -20,6 +20,7 @@ interface DisconnectEvent {
 export interface RawLifecycleEvents {
   connect: string;
   disconnect: DisconnectEvent;
+  loginAssertion: string;
 }
 
 export interface RawClientOptions {

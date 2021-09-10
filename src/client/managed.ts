@@ -222,7 +222,6 @@ export class ManagedShowdownClient {
       pass: password,
       challengekeyid: this.challenge.id,
       challenge: this.challenge.value,
-      sid: 'sneed',
     };
 
     this.debugLog(false, 'Attempting login to login server');
@@ -238,6 +237,8 @@ export class ManagedShowdownClient {
 
     if (login.actionsuccess && login.assertion) {
       this.debugLog(false, 'Received login success from login server');
+
+      this.lifecycleEmitter.emit('loginAssertion', login.assertion);
 
       return this.forceLogin(`|/trn ${username},${avatar},${login.assertion}`);
     }
