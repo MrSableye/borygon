@@ -7,7 +7,7 @@ import {
 import { deserializeUser, serializeUser, userType } from './types';
 
 export const winMessageType = t.type({
-  username: userType,
+  user: userType,
 });
 
 /**
@@ -32,7 +32,7 @@ export const winMessageType = t.type({
 export type WinMessage = t.TypeOf<typeof winMessageType>;
 
 export const winMessageSchema: KeySchema<WinMessage> = [
-  ['username', deserializeUser, serializeUser],
+  ['user', deserializeUser, serializeUser],
 ];
 
 export const deserializeWinMessage = createSchemaDeserializer(winMessageType, winMessageSchema);
