@@ -10,7 +10,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "lint": "eslint ./src --fix --ext .ts",
+    "lint": "eslint ./src --ext .ts",
+    "fix": "eslint ./src --fix --ext .ts",
     "prepublish": "npm run build",
     "test": "jest",
     "coverage": "jest --collectCoverage"
