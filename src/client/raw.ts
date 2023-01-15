@@ -1,13 +1,10 @@
 import WebSocket from 'isomorphic-ws';
 import Emittery from 'emittery';
 import {
-  getPokemonShowdownEventKey,
-  parsers,
-} from '../event';
-import {
-  EventError,
-  RoomEvents,
-} from './types';
+  deserializeRawMessages,
+  RoomMessages,
+  RoomMessageError,
+} from '../protocol';
 
 const manualCloseCode = 4200;
 
@@ -26,21 +23,23 @@ export interface RawLifecycleEvents {
 export interface RawClientOptions {
   server: string;
   port: number;
+  socketTimeout: number;
 }
 
 const defaultClientOptions: RawClientOptions = {
   server: 'sim3.psim.us',
   port: 443,
+  socketTimeout: 10 * 1000,
 };
 
 export class RawShowdownClient {
   private readonly clientOptions: RawClientOptions;
 
-  readonly eventEmitter: Emittery.Typed<RoomEvents>;
+  readonly messages: Emittery.Typed<RoomMessages>;
 
-  readonly lifecycleEmitter: Emittery.Typed<RawLifecycleEvents>;
+  readonly lifecycle: Emittery.Typed<RawLifecycleEvents>;
 
-  readonly eventErrorEmitter: Emittery.Typed<EventError>;
+  readonly errors: Emittery.Typed<{ messageError: RoomMessageError }>;
 
   socket?: WebSocket;
 
@@ -49,9 +48,9 @@ export class RawShowdownClient {
       ...defaultClientOptions,
       ...clientOptions,
     };
-    this.eventEmitter = new Emittery.Typed<RoomEvents>();
-    this.lifecycleEmitter = new Emittery.Typed<RawLifecycleEvents>();
-    this.eventErrorEmitter = new Emittery.Typed<EventError>();
+    this.messages = new Emittery.Typed<RoomMessages>();
+    this.lifecycle = new Emittery.Typed<RawLifecycleEvents>();
+    this.errors = new Emittery.Typed<{ messageError: RoomMessageError }>();
   }
 
   public connect(): Promise<void> {
@@ -60,7 +59,7 @@ export class RawShowdownClient {
     this.socket = new WebSocket(websocketUrl);
 
     this.socket.addEventListener('open', () => {
-      this.lifecycleEmitter.emit('connect', 'meme'); // TODO
+      this.lifecycle.emit('connect', 'Connected to WebSocket');
     });
 
     this.socket.addEventListener('message', (messageEvent) => {
@@ -68,14 +67,14 @@ export class RawShowdownClient {
     });
 
     this.socket.addEventListener('close', (closeEvent) => {
-      this.lifecycleEmitter.emit('disconnect', {
+      this.lifecycle.emit('disconnect', {
         isManual: closeEvent.code === manualCloseCode,
         isError: false,
       });
     });
 
     this.socket.addEventListener('error', () => {
-      this.lifecycleEmitter.emit('disconnect', {
+      this.lifecycle.emit('disconnect', {
         isManual: false,
         isError: true,
       });
@@ -98,7 +97,8 @@ export class RawShowdownClient {
       this.socket?.addEventListener('open', openListener);
       this.socket?.addEventListener('close', closeListener);
       this.socket?.addEventListener('error', errorListener);
-      // TODO: Add connection timeout?
+
+      setTimeout(reject, this.clientOptions.socketTimeout);
     });
   }
 
@@ -111,33 +111,14 @@ export class RawShowdownClient {
   }
 
   private handleData(rawMessage: string) {
-    const messages = rawMessage.split('\n');
-    let room = 'lobby';
+    const messageResults = deserializeRawMessages(rawMessage);
 
-    messages.forEach((message) => {
-      if (message.charAt(0) === '>') {
-        room = message.substr(1);
+    messageResults.forEach((messageResult) => {
+      if (!messageResult) return;
+      if ('value' in messageResult) {
+        this.messages.emit(messageResult.value.messageName, messageResult.value);
       } else {
-        const [, rawEventName, ...args] = message
-          .split('|')
-          .map((splitMessage) => splitMessage.trim());
-
-        const eventName = getPokemonShowdownEventKey(rawEventName);
-        const parserResult = parsers[eventName](args);
-
-        if ('value' in parserResult) {
-          const roomEvent = {
-            room,
-            rawEventName,
-            rawEvent: message,
-            eventName,
-            event: parserResult.value,
-          } as RoomEvents[typeof eventName];
-
-          this.eventEmitter.emit(eventName, roomEvent);
-        } else {
-          this.eventErrorEmitter.emit('eventError', { eventName: rawEventName, rawEvent: message, errors: parserResult.errors });
-        }
+        this.errors.emit('messageError', messageResult.error);
       }
     });
   }

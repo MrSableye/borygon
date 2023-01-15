@@ -8,9 +8,9 @@ import {
   RawShowdownClient,
 } from './raw';
 import {
-  EventError,
-  RoomEvents,
-} from './types';
+  RoomMessages,
+  RoomMessageError,
+} from '../protocol';
 
 interface RetryConfiguration {
   delay: number;
@@ -62,11 +62,11 @@ export class ManagedShowdownClient {
 
   private readonly clientOptions: ClientOptions;
 
-  readonly eventEmitter: Emittery.Typed<RoomEvents>;
+  readonly messages: Emittery.Typed<RoomMessages>;
 
-  readonly lifecycleEmitter: Emittery.Typed<RawLifecycleEvents>;
+  readonly lifecycle: Emittery.Typed<RawLifecycleEvents>;
 
-  readonly eventErrorEmitter: Emittery.Typed<EventError>;
+  readonly errors: Emittery.Typed<{ messageError: RoomMessageError }>;
 
   private messageQueue: PriorityQueue<QueuedMessage>;
 
@@ -76,7 +76,7 @@ export class ManagedShowdownClient {
 
   private lastLogin?: () => Promise<void>;
 
-  private challenge?: { id: string, value: string };
+  private challenge?: { keyId: string, challenge: string };
 
   constructor(clientOptions: Partial<ClientOptions>) {
     this.clientOptions = {
@@ -85,18 +85,18 @@ export class ManagedShowdownClient {
     };
 
     this.rawClient = new RawShowdownClient(clientOptions);
-    this.eventEmitter = this.rawClient.eventEmitter;
-    this.lifecycleEmitter = this.rawClient.lifecycleEmitter;
-    this.eventErrorEmitter = this.rawClient.eventErrorEmitter;
+    this.messages = this.rawClient.messages;
+    this.lifecycle = this.rawClient.lifecycle;
+    this.errors = this.rawClient.errors;
 
     this.messageQueue = createMessageQueue();
     this.loggedIn = false;
 
-    this.eventEmitter.on('challenge', ({ event: [eventValue] }) => {
-      this.challenge = eventValue;
+    this.messages.on('challenge', ({ message: [messageValue] }) => {
+      this.challenge = messageValue;
     });
 
-    this.lifecycleEmitter.on('disconnect', async (disconnectEvent) => {
+    this.lifecycle.on('disconnect', async (disconnectEvent) => {
       this.debugLog(true, 'Underlying client disconnected, freeing up resources');
 
       this.disconnect();
@@ -128,9 +128,9 @@ export class ManagedShowdownClient {
       }
 
       if (isError) {
-        console.error(...modifiedArgs);
+        console.error(...modifiedArgs); // eslint-disable-line no-console
       } else {
-        console.log(...modifiedArgs);
+        console.log(...modifiedArgs); // eslint-disable-line no-console
       }
     }
   }
@@ -203,7 +203,7 @@ export class ManagedShowdownClient {
 
       try {
         await new Promise<void>((resolve, reject) => {
-          this.eventEmitter.on('challenge', () => resolve());
+          this.messages.on('challenge', () => resolve());
           wait(this.clientOptions.challengeDelay).then(() => reject());
         });
 
@@ -220,8 +220,8 @@ export class ManagedShowdownClient {
       act: 'login',
       name: username,
       pass: password,
-      challengekeyid: this.challenge.id,
-      challenge: this.challenge.value,
+      challengekeyid: this.challenge.keyId,
+      challenge: this.challenge.challenge,
     };
 
     this.debugLog(false, 'Attempting login to login server');
@@ -238,7 +238,7 @@ export class ManagedShowdownClient {
     if (login.actionsuccess && login.assertion) {
       this.debugLog(false, 'Received login success from login server');
 
-      this.lifecycleEmitter.emit('loginAssertion', login.assertion);
+      this.lifecycle.emit('loginAssertion', login.assertion);
 
       return this.forceLogin(`|/trn ${username},${avatar},${login.assertion}`);
     }
@@ -378,31 +378,31 @@ export class ManagedShowdownClient {
     return promise;
   }
 
-  private receiveWithoutDelay<K extends keyof RoomEvents>(
-    roomEventName: K,
-    predicate?: (event: RoomEvents[K]) => boolean,
-  ): Promise<RoomEvents[K]> {
-    return new Promise<RoomEvents[K]>((resolve) => {
-      this.eventEmitter.on(roomEventName, (roomEvent) => {
-        if (!predicate || predicate(roomEvent)) {
-          resolve(roomEvent);
+  private receiveWithoutDelay<K extends keyof RoomMessages>(
+    roomMessageName: K,
+    predicate?: (message: RoomMessages[K]) => boolean,
+  ): Promise<RoomMessages[K]> {
+    return new Promise<RoomMessages[K]>((resolve) => {
+      this.messages.on(roomMessageName, (roomMessage) => {
+        if (!predicate || predicate(roomMessage)) {
+          resolve(roomMessage);
         }
       });
     });
   }
 
-  public async receive<K extends keyof RoomEvents>(
-    roomEventName: K,
+  public async receive<K extends keyof RoomMessages>(
+    roomMessageName: K,
     timeout?: number,
-    predicate?: (event: RoomEvents[K]) => boolean,
-  ): Promise<RoomEvents[K]> {
+    predicate?: (message: RoomMessages[K]) => boolean,
+  ): Promise<RoomMessages[K]> {
     if (timeout) {
       return Promise.race([
-        this.receiveWithoutDelay(roomEventName, predicate),
+        this.receiveWithoutDelay(roomMessageName, predicate),
         waitToReject(timeout),
       ]);
     }
 
-    return this.receiveWithoutDelay(roomEventName, predicate);
+    return this.receiveWithoutDelay(roomMessageName, predicate);
   }
 }
