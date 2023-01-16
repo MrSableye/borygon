@@ -3,6 +3,8 @@ import {
   createJsonDeserializer,
   createNullableDeserializer,
   createNullableSerializer,
+  createOptionalDeserializer,
+  createOptionalSerializer,
   createSchemaDeserializer,
   createSchemaSerializer,
   KeySchema,
@@ -142,7 +144,7 @@ const requestType = t.intersection([
 ]);
 
 export const requestMessageType = t.type({
-  request: t.union([requestType, t.null]),
+  request: t.union([requestType, t.null, t.undefined]),
 });
 
 /* eslint-disable max-len */
@@ -205,7 +207,10 @@ export type RequestMessage = t.TypeOf<typeof requestMessageType>;
 /* eslint-enable max-len */
 
 export const requestMessageSchema: KeySchema<RequestMessage> = [
-  ['request', createNullableDeserializer(createJsonDeserializer(requestType)), createNullableSerializer(serializeJson)],
+  [
+    'request',
+    createOptionalDeserializer(createNullableDeserializer(createJsonDeserializer(requestType))),
+    createOptionalSerializer(createNullableSerializer(serializeJson))],
 ];
 
 export const deserializeRequestMessage = createSchemaDeserializer(
