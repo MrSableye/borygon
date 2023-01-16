@@ -85,7 +85,7 @@ const maxMovesType = t.intersection([
     maxMoves: t.array(maxMoveType),
   }),
   t.partial({
-    gigantamax: t.boolean,
+    gigantamax: t.string,
   }),
 ]);
 
@@ -119,7 +119,7 @@ const activeType = t.intersection([
 
 const moveRequestType = t.intersection([
   t.type({
-    active: activeType,
+    active: t.array(activeType),
   }),
   t.partial({
     ally: sideType,
