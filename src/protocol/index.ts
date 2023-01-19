@@ -398,7 +398,7 @@ export interface RawPokemonShowdownMessages {
   win: WinMessage;
 }
 
-export const messageNameToClientMessageName: Record<string, keyof PokemonShowdownMessages> = {
+export const messageNameToClientMessageName: Record<keyof RawPokemonShowdownMessages, keyof PokemonShowdownMessages> = {
   '-ability': 'ability',
   '-activate': 'activate',
   '-anim': 'animation',
@@ -555,7 +555,7 @@ export const getPokemonShowdownMessageKey = (key?: string): keyof PokemonShowdow
     return 'default';
   }
 
-  return messageNameToClientMessageName[key] || 'unhandled';
+  return messageNameToClientMessageName[key as keyof RawPokemonShowdownMessages] || 'unhandled';
 };
 
 export type PokemonShowdownMessageDeserializers = {
@@ -863,7 +863,7 @@ export const pokemonShowdownMessageNames = Object.keys(deserializers) as (keyof 
 export type RoomMessages = {
   [K in keyof PokemonShowdownMessages]: {
     room: string,
-    rawMessageName?: string,
+    rawMessageName?: keyof RawPokemonShowdownMessages,
     rawMessage: string,
     messageName: K,
     message: [PokemonShowdownMessages[K], Record<string, string>]
@@ -874,7 +874,7 @@ type RoomMessage = RoomMessages[keyof RoomMessages];
 
 export interface RoomMessageError {
   room: string;
-  rawMessageName: string;
+  rawMessageName: keyof RawPokemonShowdownMessages;
   rawMessage: string,
   messageName: string,
   errors: string[],
