@@ -78,7 +78,7 @@ export class ManagedShowdownClient {
 
   private challenge?: { keyId: string, challenge: string };
 
-  constructor(clientOptions: Partial<ClientOptions>) {
+  constructor(clientOptions: Partial<ClientOptions> = {}) {
     this.clientOptions = {
       ...defaultClientOptions,
       ...clientOptions,

@@ -43,7 +43,7 @@ export class RawShowdownClient {
 
   socket?: WebSocket;
 
-  constructor(clientOptions: Partial<RawClientOptions>) {
+  constructor(clientOptions: Partial<RawClientOptions> = {}) {
     this.clientOptions = {
       ...defaultClientOptions,
       ...clientOptions,
