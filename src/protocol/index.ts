@@ -246,159 +246,9 @@ export interface PokemonShowdownMessages {
   zPower: SinglePokemonMessageType;
 }
 
-export interface RawPokemonShowdownMessages {
-  '-ability': AbilityMessage;
-  '-activate': ActivateMessage;
-  '-anim': AnimationMessage;
-  '-block': BlockMessage;
-  '-boost': BoostMessage;
-  '-burst': UltraBurstMessage;
-  '-candynamax': CanDynamaxMessage;
-  '-center': NoArgsMessage;
-  '-clearallboost': NoArgsMessage;
-  '-clearboost': SinglePokemonMessageType;
-  '-clearnegativeboost': SinglePokemonMessageType;
-  '-clearpositiveboost': ClearPositiveBoostMessage;
-  '-combine': NoArgsMessage;
-  '-copyboost': CopyBoostMessage;
-  '-crit': SinglePokemonMessageType;
-  '-curestatus': CureStatusMessage;
-  '-cureteam': SinglePokemonMessageType;
-  '-damage': DamageMessage;
-  '-end': EndEffectMessage;
-  '-endability': EndAbilityMessage;
-  '-enditem': EndItemMessage;
-  '-fail': FailMessage;
-  '-fieldactivate': FieldStartMessage;
-  '-fieldend': FieldEndMessage;
-  '-fieldstart': FieldStartMessage;
-  '-formechange': FormeChangeMessage;
-  '-heal': HealMessage;
-  '-hint': CommonMessageMessage;
-  '-hitcount': HitCountMessage;
-  '-immune': ImmuneMessage;
-  '-invertboost': SinglePokemonMessageType;
-  '-item': ItemMessage;
-  '-mega': MegaEvolutionMessage;
-  '-message': CommonMessageMessage;
-  '-miss': MissMessage;
-  '-mustrecharge': SinglePokemonMessageType;
-  '-notarget': NoTargetMessage;
-  '-nothing': NoArgsMessage;
-  '-ohko': NoArgsMessage;
-  '-prepare': PrepareMoveMessage;
-  '-primal': SinglePokemonMessageType;
-  '-resisted': SinglePokemonMessageType;
-  '-setboost': SetBoostMessage;
-  '-sethp': SetHpMessage;
-  '-sideend': SideEndMessage;
-  '-sidestart': SideStartMessage;
-  '-singlemove': SingleMoveMessage;
-  '-singleturn': SingleTurnMoveMessage;
-  '-start': StartEffectMessage;
-  '-status': StatusMessage;
-  '-supereffective': SinglePokemonMessageType;
-  '-swapboost': SwapBoostMessage;
-  '-swapsideconditions': NoArgsMessage;
-  '-terastallize': TerastallizeMessage;
-  '-transform': TransformMessage;
-  '-unboost': UnboostMessage;
-  '-waiting': WaitingMessage;
-  '-weather': WeatherMessage;
-  '-zbroken': SinglePokemonMessageType;
-  '-zpower': SinglePokemonMessageType;
-  ':': TimestampMessage;
-  '': EmptyMessage;
-  'c:': TimestampChatMessage;
-  'chatmsg-raw': CommonMessageMessage;
-  't:': TimestampMessage;
-  askreg: RequestRegistrationMessage;
-  b: BattleMessage;
-  B: BattleMessage;
-  battle: BattleMessage;
-  bigerror: CommonMessageMessage;
-  c: ChatMessage;
-  callback: CallbackMessage;
-  cant: CantMessage;
-  challstr: ChallengeMessage;
-  chat: ChatMessage;
-  chatmsg: CommonMessageMessage;
-  choice: ChoiceMessage;
-  clearpoke: NoArgsMessage;
-  controlshtml: CommonMessageMessage;
-  customgroups: CustomGroupsMessage;
-  debug: CommonMessageMessage;
-  deinit: NoArgsMessage;
-  detailschange: DetailsChangeMessage;
-  disconnect: CommonMessageMessage;
-  drag: DragMessage;
-  error: CommonMessageMessage;
-  expire: CommonMessageMessage;
-  faint: SinglePokemonMessageType;
-  fieldhtml: CommonMessageMessage;
-  formats: FormatsMessage;
-  gametype: GameTypeMessage;
-  gen: GenerationMessage;
-  hidelines: HideLinesMessage;
-  html: CommonMessageMessage;
-  inactive: CommonMessageMessage;
-  inactiveoff: CommonMessageMessage;
-  init: InitializeRoomMessage;
-  j: JoinMessage;
-  J: JoinMessage;
-  join: JoinMessage;
-  l: LeaveMessage;
-  L: LeaveMessage;
-  leave: LeaveMessage;
-  message: CommonMessageMessage;
-  move: MoveMessage;
-  n: NameChangeMessage;
-  N: NameChangeMessage;
-  name: NameChangeMessage;
-  nametaken: NameTakenMessage;
-  noinit: ErrorInitializingRoomMessage;
-  notify: NotificationMessage;
-  player: PlayerMessage;
-  pm: PmMessage;
-  poke: TeamPreviewMessage;
-  popup: CommonMessageMessage;
-  queryresponse: QueryResponseMessage;
-  rated: RatedMessage;
-  raw: CommonMessageMessage;
-  refresh: NoArgsMessage;
-  replace: ReplaceMessage;
-  request: RequestMessage;
-  roomerror: RoomErrorMessage;
-  rule: RuleMessage;
-  seed: SeedMessage;
-  start: NoArgsMessage;
-  swap: SwapMessage;
-  switch: SwitchMessage;
-  teampreview: EndTeamPreviewMessage;
-  teamsize: TeamSizeMessage;
-  tempnotify: TemporaryNotificationMessage;
-  tempnotifyoff: TemporaryNotificationOffMessage;
-  tie: NoArgsMessage;
-  tier: TierMessage;
-  title: TitleMessage;
-  tournament: TournamentMessage;
-  turn: TurnMessage;
-  uhtml: UpdateHtmlMessage;
-  uhtmlchange: UpdateHtmlMessage;
-  unlink: UnlinkMessage;
-  updatechallenges: UpdateChallengesMessage;
-  updatepoke: UpdatePokemonMessage;
-  updatesearch: UpdateSearchMessage;
-  updateuser: UpdateUserMessage;
-  upkeep: NoArgsMessage;
-  usercount: UserCountMessage;
-  users: UsersMessage;
-  variation: CommonMessageMessage;
-  warning: CommonMessageMessage;
-  win: WinMessage;
-}
+export type PokemonShowdownMessageName = keyof PokemonShowdownMessages;
 
-export const messageNameToClientMessageName: Record<keyof RawPokemonShowdownMessages, keyof PokemonShowdownMessages> = {
+export interface RawPokemonShowdownMessages {
   '-ability': 'ability',
   '-activate': 'activate',
   '-anim': 'animation',
@@ -480,6 +330,7 @@ export const messageNameToClientMessageName: Record<keyof RawPokemonShowdownMess
   controlshtml: 'controlsHtml',
   customgroups: 'customGroups',
   debug: 'debug',
+  default: 'default',
   deinit: 'deinitializeRoom',
   detailschange: 'detailsChange',
   disconnect: 'disconnect',
@@ -537,6 +388,163 @@ export const messageNameToClientMessageName: Record<keyof RawPokemonShowdownMess
   turn: 'turn',
   uhtml: 'updateHtml',
   uhtmlchange: 'updateHtml',
+  unhandled: 'unhandled',
+  unlink: 'unlink',
+  updatechallenges: 'updateChallenges',
+  updatepoke: 'updatePokemon',
+  updatesearch: 'updateSearch',
+  updateuser: 'updateUser',
+  upkeep: 'upkeep',
+  usercount: 'userCount',
+  users: 'users',
+  variation: 'variation',
+  warning: 'warning',
+  win: 'win',
+}
+
+export type RawPokemonShowdownMessageName = keyof RawPokemonShowdownMessages;
+
+export const rawShowdownPokemonMessages: RawPokemonShowdownMessages = {
+  '-ability': 'ability',
+  '-activate': 'activate',
+  '-anim': 'animation',
+  '-block': 'block',
+  '-boost': 'boost',
+  '-burst': 'ultraBurst',
+  '-candynamax': 'canDynamax',
+  '-center': 'center',
+  '-clearallboost': 'clearAllBoost',
+  '-clearboost': 'clearBoost',
+  '-clearnegativeboost': 'clearNegativeBoost',
+  '-clearpositiveboost': 'clearPositiveBoost',
+  '-combine': 'combine',
+  '-copyboost': 'copyBoost',
+  '-crit': 'crit',
+  '-curestatus': 'cureStatus',
+  '-cureteam': 'cureTeam',
+  '-damage': 'damage',
+  '-end': 'endEffect',
+  '-endability': 'endAbility',
+  '-enditem': 'endItem',
+  '-fail': 'fail',
+  '-fieldactivate': 'fieldStart',
+  '-fieldend': 'fieldEnd',
+  '-fieldstart': 'fieldStart',
+  '-formechange': 'formeChange',
+  '-heal': 'heal',
+  '-hint': 'hint',
+  '-hitcount': 'hitCount',
+  '-immune': 'immune',
+  '-invertboost': 'invertBoost',
+  '-item': 'item',
+  '-mega': 'megaEvolution',
+  '-message': 'miscellaneousMessage',
+  '-miss': 'miss',
+  '-mustrecharge': 'recharge',
+  '-notarget': 'noTarget',
+  '-nothing': 'nothing',
+  '-ohko': 'ohko',
+  '-prepare': 'prepareMove',
+  '-primal': 'primalReversion',
+  '-resisted': 'resisted',
+  '-setboost': 'setBoost',
+  '-sethp': 'setHp',
+  '-sideend': 'sideEnd',
+  '-sidestart': 'sideStart',
+  '-singlemove': 'singleMove',
+  '-singleturn': 'singleTurnMove',
+  '-start': 'startEffect',
+  '-status': 'status',
+  '-supereffective': 'superEffective',
+  '-swapboost': 'swapBoost',
+  '-swapsideconditions': 'swapSideConditions',
+  '-terastallize': 'terastallize',
+  '-transform': 'transform',
+  '-unboost': 'unboost',
+  '-waiting': 'waiting',
+  '-weather': 'weather',
+  '-zbroken': 'zBroken',
+  '-zpower': 'zPower',
+  ':': 'timestamp',
+  '': 'empty',
+  'c:': 'timestampChat',
+  'chatmsg-raw': 'chatMessageRaw',
+  't:': 'timestamp',
+  askreg: 'requestRegistration',
+  b: 'battle',
+  B: 'battle',
+  battle: 'battle',
+  bigerror: 'bigError',
+  c: 'chat',
+  callback: 'callback',
+  cant: 'cant',
+  challstr: 'challenge',
+  chat: 'chat',
+  chatmsg: 'chatMessage',
+  choice: 'choice',
+  clearpoke: 'startTeamPreview',
+  controlshtml: 'controlsHtml',
+  customgroups: 'customGroups',
+  debug: 'debug',
+  default: 'default',
+  deinit: 'deinitializeRoom',
+  detailschange: 'detailsChange',
+  disconnect: 'disconnect',
+  drag: 'drag',
+  error: 'error',
+  expire: 'expire',
+  faint: 'faint',
+  fieldhtml: 'fieldHtml',
+  formats: 'formats',
+  gametype: 'gameType',
+  gen: 'generation',
+  hidelines: 'hideLines',
+  html: 'html',
+  inactive: 'inactive',
+  inactiveoff: 'inactiveOff',
+  init: 'initializeRoom',
+  j: 'join',
+  J: 'silentJoin',
+  join: 'join',
+  l: 'leave',
+  L: 'silentLeave',
+  leave: 'leave',
+  message: 'miscellaneousMessage',
+  move: 'move',
+  n: 'nameChange',
+  N: 'silentNameChange',
+  name: 'nameChange',
+  nametaken: 'nameTaken',
+  noinit: 'errorInitializingRoom',
+  notify: 'notification',
+  player: 'player',
+  pm: 'pm',
+  poke: 'teamPreview',
+  popup: 'popup',
+  queryresponse: 'queryResponse',
+  rated: 'rated',
+  raw: 'raw',
+  refresh: 'refresh',
+  replace: 'replace',
+  request: 'request',
+  roomerror: 'roomError',
+  rule: 'rule',
+  seed: 'seed',
+  start: 'battleStart',
+  swap: 'swap',
+  switch: 'switch',
+  teampreview: 'endTeamPreview',
+  teamsize: 'teamSize',
+  tempnotify: 'temporaryNotification',
+  tempnotifyoff: 'temporaryNotificationOff',
+  tie: 'tie',
+  tier: 'tier',
+  title: 'title',
+  tournament: 'tournament',
+  turn: 'turn',
+  uhtml: 'updateHtml',
+  uhtmlchange: 'updateHtml',
+  unhandled: 'unhandled',
   unlink: 'unlink',
   updatechallenges: 'updateChallenges',
   updatepoke: 'updatePokemon',
@@ -550,16 +558,8 @@ export const messageNameToClientMessageName: Record<keyof RawPokemonShowdownMess
   win: 'win',
 };
 
-export const getPokemonShowdownMessageKey = (key?: string): keyof PokemonShowdownMessages => {
-  if (key === undefined) {
-    return 'default';
-  }
-
-  return messageNameToClientMessageName[key as keyof RawPokemonShowdownMessages] || 'unhandled';
-};
-
 export type PokemonShowdownMessageDeserializers = {
-  [key in keyof PokemonShowdownMessages]: ArgsDeserializer<PokemonShowdownMessages[key]>;
+  [key in PokemonShowdownMessageName]: ArgsDeserializer<PokemonShowdownMessages[key]>;
 };
 
 export const deserializers: PokemonShowdownMessageDeserializers = {
@@ -709,7 +709,7 @@ export const deserializers: PokemonShowdownMessageDeserializers = {
 };
 
 export type PokemonShowdownMessageSerializers = {
-  [key in keyof PokemonShowdownMessages]: ArgsSerializer<PokemonShowdownMessages[key]>;
+  [key in PokemonShowdownMessageName]: ArgsSerializer<PokemonShowdownMessages[key]>;
 };
 
 export const serializers: PokemonShowdownMessageSerializers = {
@@ -858,100 +858,183 @@ export const serializers: PokemonShowdownMessageSerializers = {
   zPower: serializeSinglePokemonMessage,
 };
 
-export const pokemonShowdownMessageNames = Object.keys(deserializers) as (keyof PokemonShowdownMessages)[];
+type PokemonShowdownMessageNamePair = {
+  [K in RawPokemonShowdownMessageName]: [rawMessageName: K, messageName: RawPokemonShowdownMessages[K]]
+}[RawPokemonShowdownMessageName];
 
-export type RoomMessages = {
-  [K in keyof PokemonShowdownMessages]: {
+export const getPokemonShowdownMessageNamePair = (rawMessageName?: string): PokemonShowdownMessageNamePair => {
+  if (rawMessageName === undefined) {
+    return ['unhandled', 'unhandled'];
+  }
+
+  if (rawMessageName in rawShowdownPokemonMessages) {
+    const typedRawMessageName = rawMessageName as RawPokemonShowdownMessageName;
+    const messageName = rawShowdownPokemonMessages[typedRawMessageName];
+    return [typedRawMessageName, messageName] as PokemonShowdownMessageNamePair; // TODO: Remove type assertion?
+  }
+
+  return ['unhandled', 'unhandled'];
+};
+
+export const pokemonShowdownMessageNames = Object.keys(deserializers) as PokemonShowdownMessageName[];
+export const rawPokemonShowdownMessagesNames = Object.keys(serializers) as RawPokemonShowdownMessageName[];
+
+export type RawRoomMessages = {
+  [K in RawPokemonShowdownMessageName]: {
     room: string,
-    rawMessageName?: keyof RawPokemonShowdownMessages,
+    rawMessageName: K,
     rawMessage: string,
-    messageName: K,
-    message: [PokemonShowdownMessages[K], Record<string, string>]
+    messageName: RawPokemonShowdownMessages[K],
+    value: {
+      message: PokemonShowdownMessages[RawPokemonShowdownMessages[K]],
+      keywordArguments: Record<string, string>,
+    },
   };
 };
 
-type RoomMessage = RoomMessages[keyof RoomMessages];
+type RawRoomMessage = RawRoomMessages[keyof RawRoomMessages];
 
-export interface RoomMessageError {
-  room: string;
-  rawMessageName: keyof RawPokemonShowdownMessages;
-  rawMessage: string,
-  messageName: string,
-  errors: string[],
-}
+export type RawRoomMessageErrors = {
+  [K in RawPokemonShowdownMessageName]: {
+    room: string,
+    rawMessageName: K,
+    rawMessage: string,
+    messageName: RawPokemonShowdownMessages[K],
+    errors: string[];
+  };
+};
 
-export type RoomMessageResult = { value: RoomMessage } | { error: RoomMessageError };
+type RawRoomMessageError = RawRoomMessageErrors[keyof RawRoomMessageErrors];
+
+type RawPokemonShowdownMessagesFor = {
+  [A in RawPokemonShowdownMessageName]: {
+    [K in PokemonShowdownMessageName]: K extends RawPokemonShowdownMessages[A] ? A : never
+  };
+}[RawPokemonShowdownMessageName];
+
+export type RoomMessages = {
+  [K in PokemonShowdownMessageName]: {
+    room: string,
+    rawMessageName: RawPokemonShowdownMessagesFor[K],
+    rawMessage: string,
+    messageName: K,
+    value: {
+      message: PokemonShowdownMessages[K],
+      keywordArguments: Record<string, string>,
+    },
+  };
+};
+
+export type RoomMessageErrors = {
+  [K in PokemonShowdownMessageName]: {
+    room: string;
+    rawMessageName: RawPokemonShowdownMessagesFor[K];
+    rawMessage: string,
+    messageName: K,
+    errors: string[],
+  };
+};
+
+export type RoomMessageError = RoomMessageErrors[keyof RoomMessageErrors];
+
+export type RoomMessageResult = { value: RawRoomMessage } | { error: RawRoomMessageError };
 
 export const deserializeRawMessages = (rawMessagesInput: string): RoomMessageResult[] => {
   const rawMessages = rawMessagesInput.split('\n');
   let room = 'lobby';
 
   return rawMessages
-    .map((rawMessage) => {
-      if (rawMessage.charAt(0) === '>') {
-        room = rawMessage.substr(1);
-        return undefined;
-      }
+    .map<RoomMessageResult | undefined>((rawMessage) => {
+    if (rawMessage.charAt(0) === '>') {
+      room = rawMessage.substr(1);
+      return undefined;
+    }
 
-      if (rawMessage.charAt(0) !== '|') {
-        return {
-          value: {
-            room,
-            rawMessage,
-            messageName: 'default',
-            message: [[rawMessage], {}],
-          },
-        };
-      }
-
-      const [, rawMessageName, ...args] = rawMessage
-        .split('|');
-      const messageName = getPokemonShowdownMessageKey(rawMessageName);
-      const deserializer = deserializers[messageName] || deserializers.unhandled;
-      const result = deserializer(args);
-
-      if ('value' in result) {
-        return {
-          value: {
-            room,
-            rawMessageName,
-            rawMessage,
-            messageName,
-            message: result.value,
-          },
-        };
-      }
-
+    if (rawMessage.charAt(0) !== '|') {
       return {
-        error: {
+        value: {
+          room,
+          rawMessageName: 'default',
+          rawMessage,
+          messageName: 'default',
+          value: {
+            message: [rawMessage],
+            keywordArguments: {},
+          },
+        },
+      };
+    }
+
+    const [, unknownMessageName, ...args] = rawMessage
+      .split('|');
+    const [rawMessageName, messageName] = getPokemonShowdownMessageNamePair(unknownMessageName);
+
+    if (rawMessageName === 'unhandled') {
+      return {
+        value: {
           room,
           rawMessageName,
           rawMessage,
           messageName,
-          errors: result.errors,
+          value: {
+            message: [unknownMessageName, ...args],
+            keywordArguments: {},
+          },
         },
       };
-    })
-    .filter(
-      (messageDeserializeResult) => messageDeserializeResult !== undefined,
-    ) as RoomMessageResult[];
+    }
+
+    const deserializer = deserializers[messageName];
+    const result = deserializer(args);
+
+    if ('value' in result) {
+      return {
+        value: {
+          room,
+          rawMessageName,
+          rawMessage,
+          messageName,
+          value: {
+            message: result.value[0],
+            keywordArguments: result.value[1],
+          },
+        } as RawRoomMessage, // TODO: See if assertion can be removed
+      };
+    }
+
+    return {
+      error: {
+        room,
+        rawMessageName,
+        rawMessage,
+        messageName,
+        errors: result.errors,
+      } as RawRoomMessageError, // TODO: See if assertion can be removed
+    };
+  }).filter(
+    (messageDeserializeResult) => messageDeserializeResult !== undefined,
+  ) as RoomMessageResult[];
 };
 
-export const serializeMessage = <K extends keyof RawPokemonShowdownMessages>(
-  messageType: K | undefined,
-  message: RawPokemonShowdownMessages[K],
-  keywordArguments: KeywordArguments = {},
+export const serializeMessage = <K extends RawPokemonShowdownMessageName, T extends PokemonShowdownMessages[RawPokemonShowdownMessages[K]]>(
+  rawMessageName: K,
+  message: T,
+  keywordArguments: KeywordArguments,
 ) => {
-  const messageName = getPokemonShowdownMessageKey(messageType);
-  const serializer = (serializers[messageName] || serializers.unhandled) as ArgsSerializer<typeof message>;
+  const [, messageName] = getPokemonShowdownMessageNamePair(rawMessageName);
+  const serializer = serializers[messageName] as ArgsSerializer<T>;
   const result = serializer(message, keywordArguments);
 
   if ('value' in result) {
-    if (messageType === undefined) {
+    if (rawMessageName === 'default') { // Special case where there is no actual raw message name
       return { value: [...result.value] };
     }
 
-    return { value: [messageType, ...result.value] };
+    if (rawMessageName === 'unhandled') { // Raw message name is included, empty string prepended
+      return { value: ['', ...result.value] };
+    }
+
+    return { value: ['', rawMessageName, ...result.value] };
   }
 
   return result;

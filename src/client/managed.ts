@@ -92,8 +92,8 @@ export class ManagedShowdownClient {
     this.messageQueue = createMessageQueue();
     this.loggedIn = false;
 
-    this.messages.on('challenge', ({ message: [messageValue] }) => {
-      this.challenge = messageValue;
+    this.messages.on('challenge', (challengeMessage) => {
+      this.challenge = challengeMessage.value.message;
     });
 
     this.lifecycle.on('disconnect', async (disconnectEvent) => {
