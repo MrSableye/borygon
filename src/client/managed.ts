@@ -29,7 +29,7 @@ export interface ClientOptions extends Partial<RawClientOptions> {
 }
 
 const defaultClientOptions: ClientOptions = {
-  throttle: 500,
+  throttle: 620,
   connectionRetry: { delay: 30 * 1000, retries: Number.POSITIVE_INFINITY },
   actionUrl: 'https://play.pokemonshowdown.com/~~showdown/action.php',
   loginRetry: { delay: 30 * 1000, retries: Number.POSITIVE_INFINITY },
