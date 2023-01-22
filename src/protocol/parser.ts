@@ -223,7 +223,7 @@ export const createArrayDeserializer = <T>(deserializer: Deserializer<T>, delimi
   const errors: string[] = [];
 
   input.split(delimiter).forEach((splitInput) => {
-    const splitInputResult = deserializer(splitInput.trim());
+    const splitInputResult = deserializer(splitInput);
 
     if ('errors' in splitInputResult) {
       errors.push(...splitInputResult.errors);

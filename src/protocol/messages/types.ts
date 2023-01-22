@@ -339,7 +339,7 @@ export const pokemonDetailsType = t.intersection([
 export type PokemonDetails = t.TypeOf<typeof pokemonDetailsType>;
 
 export const deserializePokemonDetails: Deserializer<PokemonDetails> = (input: string) => {
-  const [species, ...flags] = input.split(',').map((splitInput) => splitInput.trim());
+  const [species, ...flags] = input.split(', ').map((splitInput) => splitInput);
 
   const partialPokemonDetails: PokemonDetails = {
     species,
@@ -414,14 +414,14 @@ export const pokemonType = t.type({
 export type Pokemon = t.TypeOf<typeof pokemonType>;
 
 export const deserializePokemon: Deserializer<Pokemon> = (input: string) => {
-  const [positionInput, ...rest] = input.split(':');
+  const [positionInput, ...rest] = input.split(': ');
   const position = deserializePosition(positionInput);
 
   if ('errors' in position) {
     return { errors: position.errors };
   }
 
-  return { value: { position: position.value, name: rest.join(':').trim() } };
+  return { value: { position: position.value, name: rest.join(': ') } };
 };
 
 export const serializePokemon: Serializer<Pokemon> = (input) => {
@@ -670,7 +670,7 @@ export const sideType = t.type({
 export type Side = t.TypeOf<typeof sideType>;
 
 export const deserializeSide: Deserializer<Side> = (input: string) => {
-  const [playerInput, ...rest] = input.split(':').map((splitInput) => splitInput.trim());
+  const [playerInput, ...rest] = input.split(': ').map((splitInput) => splitInput);
   const player = deserializePlayer(playerInput);
 
   if ('errors' in player) {

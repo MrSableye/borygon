@@ -31,7 +31,7 @@ export const ruleMessageType = t.intersection([
 export type RuleMessage = t.TypeOf<typeof ruleMessageType>;
 
 export const deserializeRuleMessage: ArgsDeserializer<RuleMessage> = (input: string[]) => {
-  const [ruleName, ruleDescription] = input[0].split(':').map((splitInput) => splitInput.trim());
+  const [ruleName, ruleDescription] = input[0].split(': ').map((splitInput) => splitInput);
 
   if (!ruleDescription) {
     return {
