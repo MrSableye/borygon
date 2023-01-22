@@ -50,7 +50,7 @@ export const nameTakenMessageSchema: KeySchema<NameTakenMessage> = [
 export const deserializeNameTakenMessage = createSchemaDeserializer(
   nameTakenMessageType,
   nameTakenMessageSchema,
-  { concatenateLastArguments: true },
+  { concatenateLastArguments: true, skipKeywordArguments: true },
 );
 export const serializeNameTakenMessage = createSchemaSerializer(
   nameTakenMessageType,

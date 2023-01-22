@@ -43,6 +43,7 @@ export const errorInitializingRoomMessageSchema: KeySchema<ErrorInitializingRoom
 export const deserializeErrorInitializingRoomMessage = createSchemaDeserializer(
   errorInitializingRoomMessageType,
   errorInitializingRoomMessageSchema,
+  { concatenateLastArguments: true, skipKeywordArguments: true },
 );
 export const serializeErrorInitializingRoomMessage = createSchemaSerializer(
   errorInitializingRoomMessageType,

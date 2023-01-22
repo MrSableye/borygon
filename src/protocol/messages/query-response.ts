@@ -51,7 +51,7 @@ export const queryResponseMessageSchema: KeySchema<QueryResponseMessage> = [
 export const deserializeQueryResponseMessage = createSchemaDeserializer(
   queryResponseMessageType,
   queryResponseMessageSchema,
-  { concatenateLastArguments: true },
+  { concatenateLastArguments: true, skipKeywordArguments: true },
 );
 export const serializeQueryResponseMessage = createSchemaSerializer(
   queryResponseMessageType,

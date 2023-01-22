@@ -48,7 +48,7 @@ export const notificationMessageSchema: KeySchema<NotificationMessage> = [
 export const deserializeNotificationMessage = createSchemaDeserializer(
   notificationMessageType,
   notificationMessageSchema,
-  { concatenateLastArguments: true },
+  { concatenateLastArguments: true, skipKeywordArguments: true },
 );
 export const serializeNotificationMessage = createSchemaSerializer(
   notificationMessageType,

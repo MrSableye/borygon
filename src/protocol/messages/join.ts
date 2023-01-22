@@ -39,5 +39,8 @@ export const joinMessageSchema: KeySchema<JoinMessage> = [
   ['user', deserializeUser, serializeUser],
 ];
 
-export const deserializeJoinMessage = createSchemaDeserializer(joinMessageType, joinMessageSchema);
+export const deserializeJoinMessage = createSchemaDeserializer(
+  joinMessageType,
+  joinMessageSchema,
+);
 export const serializeJoinMessage = createSchemaSerializer(joinMessageType, joinMessageSchema);
