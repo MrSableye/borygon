@@ -861,25 +861,33 @@ export const serializers: PokemonShowdownMessageSerializers = {
 };
 
 type PokemonShowdownMessageNamePair = {
-  [K in RawPokemonShowdownMessageName]: [rawMessageName: K, messageName: RawPokemonShowdownMessages[K]]
+  [K in RawPokemonShowdownMessageName]: [
+    rawMessageName: K,
+    messageName: RawPokemonShowdownMessages[K],
+  ]
 }[RawPokemonShowdownMessageName];
 
-export const getPokemonShowdownMessageNamePair = (rawMessageName?: string): PokemonShowdownMessageNamePair => {
+export const getPokemonShowdownMessageNamePair = (
+  rawMessageName?: string,
+): PokemonShowdownMessageNamePair => {
   if (rawMessageName === undefined) {
     return ['unhandled', 'unhandled'];
   }
 
   if (rawMessageName in rawShowdownPokemonMessages) {
+    // TODO: Remove assertions if possible
     const typedRawMessageName = rawMessageName as RawPokemonShowdownMessageName;
     const messageName = rawShowdownPokemonMessages[typedRawMessageName];
-    return [typedRawMessageName, messageName] as PokemonShowdownMessageNamePair; // TODO: Remove type assertion?
+    return [typedRawMessageName, messageName] as PokemonShowdownMessageNamePair;
   }
 
   return ['unhandled', 'unhandled'];
 };
 
+/* eslint-disable max-len */
 export const pokemonShowdownMessageNames = Object.keys(deserializers) as PokemonShowdownMessageName[];
 export const rawPokemonShowdownMessagesNames = Object.keys(serializers) as RawPokemonShowdownMessageName[];
+/* eslint-enable max-len */
 
 export type RawRoomMessages = {
   [K in RawPokemonShowdownMessageName]: {
@@ -1018,11 +1026,14 @@ export const deserializeRawMessages = (rawMessagesInput: string): RoomMessageRes
   ) as RoomMessageResult[];
 };
 
-export const serializeMessage = <K extends RawPokemonShowdownMessageName, T extends PokemonShowdownMessages[RawPokemonShowdownMessages[K]]>(
-  rawMessageName: K,
-  message: T,
-  keywordArguments: KeywordArguments,
-) => {
+export const serializeMessage = <
+  K extends RawPokemonShowdownMessageName,
+  T extends PokemonShowdownMessages[RawPokemonShowdownMessages[K]],
+>(
+    rawMessageName: K,
+    message: T,
+    keywordArguments: KeywordArguments,
+  ) => {
   const [, messageName] = getPokemonShowdownMessageNamePair(rawMessageName);
   const serializer = serializers[messageName] as ArgsSerializer<T>;
   const result = serializer(message, keywordArguments);

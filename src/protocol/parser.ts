@@ -78,7 +78,8 @@ const getInput = <T>(
   schema: KeySchema<T>,
   options: Partial<DeserializerOptions>,
 ) => {
-  if (options.concatenateLastArguments && (input[index] !== undefined) && index === schema.length - 1) {
+  const inputExists = (input[index] !== undefined) && index === schema.length - 1;
+  if (options.concatenateLastArguments && inputExists) {
     return input.slice(index).join('|');
   }
   return input[index];

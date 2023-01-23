@@ -65,7 +65,13 @@ describe('BlockMessage', () => {
     });
 
     it('deserializes a block message with keyword arguments', () => {
-      const args = [samplePokemon.text, sampleEffect, sampleMove, samplePokemon.text, sampleKeywordArgument];
+      const args = [
+        samplePokemon.text,
+        sampleEffect,
+        sampleMove,
+        samplePokemon.text,
+        sampleKeywordArgument,
+      ];
 
       const deserializationResult = deserializeBlockMessage(args);
       expect('value' in deserializationResult).toBe(true);

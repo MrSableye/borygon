@@ -140,7 +140,10 @@ describe('AnimationMessage', () => {
         target: samplePokemon.value,
       };
 
-      const serializationResult = serializeAnimationMessage(animationMessage, sampleKeywordArguments);
+      const serializationResult = serializeAnimationMessage(
+        animationMessage,
+        sampleKeywordArguments,
+      );
       expect('value' in serializationResult).toBe(true);
 
       assertResultValue(serializationResult);

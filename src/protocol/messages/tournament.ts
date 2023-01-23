@@ -71,8 +71,15 @@ const tournamentErrorMessageSchema: KeySchema<TournamentErrorMessage> = [
   ['errorMessage', createOptionalDeserializer(deserializeString), createOptionalSerializer(serializeString)],
 ];
 
-const deserializeTournamentErrorMessage = createSchemaDeserializer(tournamentErrorMessageType, tournamentErrorMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentErrorMessage = createSchemaSerializer(tournamentErrorMessageType, tournamentErrorMessageSchema);
+const deserializeTournamentErrorMessage = createSchemaDeserializer(
+  tournamentErrorMessageType,
+  tournamentErrorMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentErrorMessage = createSchemaSerializer(
+  tournamentErrorMessageType,
+  tournamentErrorMessageSchema,
+);
 
 const singleUserMessageType = t.type({
   user: userType,
@@ -84,8 +91,14 @@ const singleUserMessageSchema: KeySchema<SingleUserMessage> = [
   ['user', deserializeUser, serializeUser],
 ];
 
-const deserializeSingleUserMessage = createSchemaDeserializer(singleUserMessageType, singleUserMessageSchema, { skipKeywordArguments: true });
-const serializeSingleUserMessage = createSchemaSerializer(singleUserMessageType, singleUserMessageSchema);
+const deserializeSingleUserMessage = createSchemaDeserializer(
+  singleUserMessageType,
+  singleUserMessageSchema, { skipKeywordArguments: true },
+);
+const serializeSingleUserMessage = createSchemaSerializer(
+  singleUserMessageType,
+  singleUserMessageSchema,
+);
 
 const tournamentReplaceMessageType = t.type({
   newUser: userType,
@@ -99,8 +112,15 @@ const tournamentReplaceMessageSchema: KeySchema<TournamentReplaceMessage> = [
   ['oldUser', deserializeUser, serializeUser],
 ];
 
-const deserializeTournamentReplaceMessage = createSchemaDeserializer(tournamentReplaceMessageType, tournamentReplaceMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentReplaceMessage = createSchemaSerializer(tournamentReplaceMessageType, tournamentReplaceMessageSchema);
+const deserializeTournamentReplaceMessage = createSchemaDeserializer(
+  tournamentReplaceMessageType,
+  tournamentReplaceMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentReplaceMessage = createSchemaSerializer(
+  tournamentReplaceMessageType,
+  tournamentReplaceMessageSchema,
+);
 
 const tournamentStartMessageType = t.type({
   total: t.number,
@@ -112,8 +132,15 @@ const tournamentStartMessageSchema: KeySchema<TournamentStartMessage> = [
   ['total', deserializeNumber, serializeNumber],
 ];
 
-const deserializeTournamentStartMessage = createSchemaDeserializer(tournamentStartMessageType, tournamentStartMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentStartMessage = createSchemaSerializer(tournamentStartMessageType, tournamentStartMessageSchema);
+const deserializeTournamentStartMessage = createSchemaDeserializer(
+  tournamentStartMessageType,
+  tournamentStartMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentStartMessage = createSchemaSerializer(
+  tournamentStartMessageType,
+  tournamentStartMessageSchema,
+);
 
 const onOffType = t.keyof({
   on: true,
@@ -150,8 +177,15 @@ const tournamentAutoStartMessageSchema: KeySchema<TournamentAutoStartMessage> = 
   ['timeout', createOptionalDeserializer(deserializeNumber), createOptionalSerializer(serializeNumber)],
 ];
 
-const deserializeTournamentAutoStartMessage = createSchemaDeserializer(tournamentAutoStartMessageType, tournamentAutoStartMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentAutoStartMessage = createSchemaSerializer(tournamentAutoStartMessageType, tournamentAutoStartMessageSchema);
+const deserializeTournamentAutoStartMessage = createSchemaDeserializer(
+  tournamentAutoStartMessageType,
+  tournamentAutoStartMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentAutoStartMessage = createSchemaSerializer(
+  tournamentAutoStartMessageType,
+  tournamentAutoStartMessageSchema,
+);
 
 const allowDisallowType = t.keyof({
   allow: true,
@@ -182,8 +216,15 @@ const tournamentScoutingMessageSchema: KeySchema<TournamentScoutingMessage> = [
   ['allowDisallow', deserializeAllowDisallow, serializeAllowDisallow],
 ];
 
-const deserializeTournamentScoutingMessage = createSchemaDeserializer(tournamentScoutingMessageType, tournamentScoutingMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentScoutingMessage = createSchemaSerializer(tournamentScoutingMessageType, tournamentScoutingMessageSchema);
+const deserializeTournamentScoutingMessage = createSchemaDeserializer(
+  tournamentScoutingMessageType,
+  tournamentScoutingMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentScoutingMessage = createSchemaSerializer(
+  tournamentScoutingMessageType,
+  tournamentScoutingMessageSchema,
+);
 
 const onOffTargetType = t.keyof({
   on: true,
@@ -221,8 +262,15 @@ const tournamentAutoDqMessageSchema: KeySchema<TournamentAutoDqMessage> = [
   ['timeout', createOptionalDeserializer(deserializeNumber), createOptionalSerializer(serializeNumber)],
 ];
 
-const deserializeTournamentAutoDqMessage = createSchemaDeserializer(tournamentAutoDqMessageType, tournamentAutoDqMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentAutoDqMessage = createSchemaSerializer(tournamentAutoDqMessageType, tournamentAutoDqMessageSchema);
+const deserializeTournamentAutoDqMessage = createSchemaDeserializer(
+  tournamentAutoDqMessageType,
+  tournamentAutoDqMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentAutoDqMessage = createSchemaSerializer(
+  tournamentAutoDqMessageType,
+  tournamentAutoDqMessageSchema,
+);
 
 const tournamentBattleStartMessageType = t.type({
   user1: userType,
@@ -238,8 +286,15 @@ const tournamentBattleStartMessageSchema: KeySchema<TournamentBattleStartMessage
   ['roomId', deserializeString, serializeString],
 ];
 
-const deserializeTournamentBattleStartMessage = createSchemaDeserializer(tournamentBattleStartMessageType, tournamentBattleStartMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentBattleStartMessage = createSchemaSerializer(tournamentBattleStartMessageType, tournamentBattleStartMessageSchema);
+const deserializeTournamentBattleStartMessage = createSchemaDeserializer(
+  tournamentBattleStartMessageType,
+  tournamentBattleStartMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentBattleStartMessage = createSchemaSerializer(
+  tournamentBattleStartMessageType,
+  tournamentBattleStartMessageSchema,
+);
 
 const resultType = t.keyof({
   win: true,
@@ -301,8 +356,15 @@ const tournamentBattleEndMessageSchema: KeySchema<TournamentBattleEndMessage> = 
   ['roomId', deserializeString, serializeString],
 ];
 
-const deserializeTournamentBattleEndMessage = createSchemaDeserializer(tournamentBattleEndMessageType, tournamentBattleEndMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentBattleEndMessage = createSchemaSerializer(tournamentBattleEndMessageType, tournamentBattleEndMessageSchema);
+const deserializeTournamentBattleEndMessage = createSchemaDeserializer(
+  tournamentBattleEndMessageType,
+  tournamentBattleEndMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentBattleEndMessage = createSchemaSerializer(
+  tournamentBattleEndMessageType,
+  tournamentBattleEndMessageSchema,
+);
 
 const tournamentCreateMessageType = t.intersection([
   t.type({
@@ -324,8 +386,15 @@ const tournamentCreateMessageSchema: KeySchema<TournamentCreateMessage> = [
   ['name', createOptionalDeserializer(deserializeString, false), createOptionalSerializer(serializeString)],
 ];
 
-const deserializeTournamentCreateMessage = createSchemaDeserializer(tournamentCreateMessageType, tournamentCreateMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentCreateMessage = createSchemaSerializer(tournamentCreateMessageType, tournamentCreateMessageSchema);
+const deserializeTournamentCreateMessage = createSchemaDeserializer(
+  tournamentCreateMessageType,
+  tournamentCreateMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentCreateMessage = createSchemaSerializer(
+  tournamentCreateMessageType,
+  tournamentCreateMessageSchema,
+);
 
 const tournamentStateType = t.keyof({
   available: true, finished: true, inprogress: true, challenging: true, unavailable: true, '': true,
@@ -414,8 +483,15 @@ const tournamentUpdateMessageSchema: KeySchema<TournamentUpdateMessage> = [
   ['update', createJsonDeserializer(tournamentUpdateType), serializeJson],
 ];
 
-const deserializeTournamentUpdateMessage = createSchemaDeserializer(tournamentUpdateMessageType, tournamentUpdateMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentUpdateMessage = createSchemaSerializer(tournamentUpdateMessageType, tournamentUpdateMessageSchema);
+const deserializeTournamentUpdateMessage = createSchemaDeserializer(
+  tournamentUpdateMessageType,
+  tournamentUpdateMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentUpdateMessage = createSchemaSerializer(
+  tournamentUpdateMessageType,
+  tournamentUpdateMessageSchema,
+);
 
 const tournamentEndUpdateType = t.type({
   results: t.array(t.array(t.string)),
@@ -434,8 +510,15 @@ const tournamentEndMessageSchema: KeySchema<TournamentEndMessage> = [
   ['endUpdate', createJsonDeserializer(tournamentEndUpdateType), serializeJson],
 ];
 
-const deserializeTournamentEndMessage = createSchemaDeserializer(tournamentEndMessageType, tournamentEndMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentEndMessage = createSchemaSerializer(tournamentEndMessageType, tournamentEndMessageSchema);
+const deserializeTournamentEndMessage = createSchemaDeserializer(
+  tournamentEndMessageType,
+  tournamentEndMessageSchema,
+  { skipKeywordArguments: true },
+);
+const serializeTournamentEndMessage = createSchemaSerializer(
+  tournamentEndMessageType,
+  tournamentEndMessageSchema,
+);
 
 const tournamentInfoMessageType = t.type({
   updates: t.array(tournamentUpdateType),
@@ -447,8 +530,14 @@ const tournamentInfoMessageSchema: KeySchema<TournamentInfoMessage> = [
   ['updates', createJsonDeserializer(t.array(tournamentUpdateType)), serializeJson],
 ];
 
-const deserializeTournamentInfoMessage = createSchemaDeserializer(tournamentInfoMessageType, tournamentInfoMessageSchema, { skipKeywordArguments: true });
-const serializeTournamentInfoMessage = createSchemaSerializer(tournamentInfoMessageType, tournamentInfoMessageSchema);
+const deserializeTournamentInfoMessage = createSchemaDeserializer(
+  tournamentInfoMessageType,
+  tournamentInfoMessageSchema, { skipKeywordArguments: true },
+);
+const serializeTournamentInfoMessage = createSchemaSerializer(
+  tournamentInfoMessageType,
+  tournamentInfoMessageSchema,
+);
 
 const tournamentMessageType = t.type({
   event: t.union([

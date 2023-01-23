@@ -42,7 +42,12 @@ describe('ActivateMessage', () => {
     });
 
     it('deserializes an activate message with keyword arguments', () => {
-      const args = [samplePokemon.text, sampleEffect, ...sampleEffectArguments, sampleKeywordArgument];
+      const args = [
+        samplePokemon.text,
+        sampleEffect,
+        ...sampleEffectArguments,
+        sampleKeywordArgument,
+      ];
 
       const deserializationResult = deserializeActivateMessage(args);
       expect('value' in deserializationResult).toBe(true);
