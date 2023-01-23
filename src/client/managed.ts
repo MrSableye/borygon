@@ -9,7 +9,9 @@ import {
 } from './raw';
 import {
   RoomMessages,
-  RoomMessageError,
+  RoomMessageErrors,
+  RawRoomMessages,
+  RawRoomMessageErrors,
 } from '../protocol';
 
 interface RetryConfiguration {
@@ -55,18 +57,22 @@ const createMessageQueue = () => new PriorityQueue<QueuedMessage>((messageA, mes
 const wait = (delay: number) => new Promise<void>((resolve) => setTimeout(resolve, delay));
 const waitToReject = (
   delay: number,
-) => new Promise<never>((resolve, reject) => setTimeout(reject, delay));
+) => new Promise<never>((_, reject) => setTimeout(reject, delay));
 
 export class ManagedShowdownClient {
   private readonly rawClient: RawShowdownClient;
 
   private readonly clientOptions: ClientOptions;
 
-  readonly messages: Emittery.Typed<RoomMessages>;
-
   readonly lifecycle: Emittery.Typed<RawLifecycleEvents>;
 
-  readonly errors: Emittery.Typed<{ messageError: RoomMessageError }>;
+  readonly messages: Emittery.Typed<RoomMessages>;
+
+  readonly messageErrors: Emittery.Typed<RoomMessageErrors>;
+
+  readonly rawMessages: Emittery.Typed<RawRoomMessages>;
+
+  readonly rawMessageErrors: Emittery.Typed<RawRoomMessageErrors>;
 
   private messageQueue: PriorityQueue<QueuedMessage>;
 
@@ -85,9 +91,11 @@ export class ManagedShowdownClient {
     };
 
     this.rawClient = new RawShowdownClient(clientOptions);
-    this.messages = this.rawClient.messages;
     this.lifecycle = this.rawClient.lifecycle;
-    this.errors = this.rawClient.errors;
+    this.messages = this.rawClient.messages;
+    this.messageErrors = this.rawClient.messageErrors;
+    this.rawMessages = this.rawClient.rawMessages;
+    this.rawMessageErrors = this.rawClient.rawMessageErrors;
 
     this.messageQueue = createMessageQueue();
     this.loggedIn = false;

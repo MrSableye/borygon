@@ -2,8 +2,10 @@ import WebSocket from 'isomorphic-ws';
 import Emittery from 'emittery';
 import {
   deserializeRawMessages,
+  RawRoomMessages,
+  RawRoomMessageErrors,
   RoomMessages,
-  RoomMessageError,
+  RoomMessageErrors,
 } from '../protocol';
 
 const manualCloseCode = 4200;
@@ -35,11 +37,15 @@ const defaultClientOptions: RawClientOptions = {
 export class RawShowdownClient {
   private readonly clientOptions: RawClientOptions;
 
-  readonly messages: Emittery.Typed<RoomMessages>;
-
   readonly lifecycle: Emittery.Typed<RawLifecycleEvents>;
 
-  readonly errors: Emittery.Typed<{ messageError: RoomMessageError }>;
+  readonly messages: Emittery.Typed<RoomMessages>;
+
+  readonly messageErrors: Emittery.Typed<RoomMessageErrors>;
+
+  readonly rawMessages: Emittery.Typed<RawRoomMessages>;
+
+  readonly rawMessageErrors: Emittery.Typed<RawRoomMessageErrors>;
 
   socket?: WebSocket;
 
@@ -48,9 +54,11 @@ export class RawShowdownClient {
       ...defaultClientOptions,
       ...clientOptions,
     };
-    this.messages = new Emittery.Typed<RoomMessages>();
     this.lifecycle = new Emittery.Typed<RawLifecycleEvents>();
-    this.errors = new Emittery.Typed<{ messageError: RoomMessageError }>();
+    this.messages = new Emittery.Typed<RoomMessages>();
+    this.messageErrors = new Emittery.Typed<RoomMessageErrors>();
+    this.rawMessages = new Emittery.Typed<RawRoomMessages>();
+    this.rawMessageErrors = new Emittery.Typed<RawRoomMessageErrors>();
   }
 
   public connect(): Promise<void> {
@@ -117,8 +125,10 @@ export class RawShowdownClient {
       if (!messageResult) return;
       if ('value' in messageResult) {
         this.messages.emit(messageResult.value.messageName, messageResult.value);
+        this.rawMessages.emit(messageResult.value.rawMessageName, messageResult.value);
       } else {
-        this.errors.emit('messageError', messageResult.error);
+        this.messageErrors.emit(messageResult.error.messageName, messageResult.error);
+        this.rawMessageErrors.emit(messageResult.error.rawMessageName, messageResult.error);
       }
     });
   }
