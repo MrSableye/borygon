@@ -1,4 +1,7 @@
 # 🅱️orygon
+[![npm](https://img.shields.io/npm/v/borygon?logo=npm&logoColor=white&style=flat-square)](https://www.npmjs.com/package/borygon)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/MrSableye/borygon/main.yml?logo=github&logoColor=white&style=flat-square)](https://github.com/MrSableye/borygon/actions/workflows/main.yml)
+
 `🅱️orygon` is a WebSocket client for interacting with [Pokémon Showdown](https://github.com/smogon/pokemon-showdown). It provides strongly typed messages for the Pokémon Showdown messages it supports.  It vends two clients:
 
 - `RawShowdownClient`: A thin wrapper around `ws` that parses incoming Pokémon Showdown messages and exposes them through an event emitter.
