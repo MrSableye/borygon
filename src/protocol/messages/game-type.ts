@@ -37,6 +37,7 @@ export const gameTypeMessageSchema: KeySchema<GameTypeMessage> = [
 export const deserializeGameTypeMessage = createSchemaDeserializer(
   gameTypeMessageType,
   gameTypeMessageSchema,
+  { skipKeywordArguments: true },
 );
 export const serializeGameTypeMessage = createSchemaSerializer(
   gameTypeMessageType,
