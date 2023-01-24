@@ -67,6 +67,7 @@ import { SideEndMessage, deserializeSideEndMessage, serializeSideEndMessage } fr
 import { SideStartMessage, deserializeSideStartMessage, serializeSideStartMessage } from './messages/side-start';
 import { SingleMoveMessage, deserializeSingleMoveMessage, serializeSingleMoveMessage } from './messages/single-move';
 import { SingleTurnMoveMessage, deserializeSingleTurnMoveMessage, serializeSingleTurnMoveMessage } from './messages/single-turn';
+import { SplitMessageType, deserializeSplitMessage, serializeSplitMessage } from './messages/split';
 import { StartEffectMessage, deserializeStartEffectMessage, serializeStartEffectMessage } from './messages/start-effect';
 import { StatusMessage, deserializeStatusMessage, serializeStatusMessage } from './messages/status';
 import { SwapBoostMessage, deserializeSwapBoostMessage, serializeSwapBoostMessage } from './messages/swap-boost';
@@ -203,6 +204,7 @@ export interface PokemonShowdownMessages {
   silentNameChange: NameChangeMessage;
   singleMove: SingleMoveMessage;
   singleTurnMove: SingleTurnMoveMessage;
+  split: SplitMessageType;
   startEffect: StartEffectMessage;
   startTeamPreview: NoArgsMessage;
   status: StatusMessage;
@@ -374,6 +376,7 @@ export interface RawPokemonShowdownMessages {
   roomerror: 'roomError',
   rule: 'rule',
   seed: 'seed',
+  split: 'split',
   start: 'battleStart',
   swap: 'swap',
   switch: 'switch',
@@ -531,6 +534,7 @@ export const rawShowdownPokemonMessages: RawPokemonShowdownMessages = {
   roomerror: 'roomError',
   rule: 'rule',
   seed: 'seed',
+  split: 'split',
   start: 'battleStart',
   swap: 'swap',
   switch: 'switch',
@@ -667,6 +671,7 @@ export const deserializers: PokemonShowdownMessageDeserializers = {
   silentNameChange: deserializeNameChangeMessage,
   singleMove: deserializeSingleMoveMessage,
   singleTurnMove: deserializeSingleTurnMoveMessage,
+  split: deserializeSplitMessage,
   startEffect: deserializeStartEffectMessage,
   startTeamPreview: deserializeNoArgsMessage,
   status: deserializeStatusMessage,
@@ -817,6 +822,7 @@ export const serializers: PokemonShowdownMessageSerializers = {
   silentNameChange: serializeNameChangeMessage,
   singleMove: serializeSingleMoveMessage,
   singleTurnMove: serializeSingleTurnMoveMessage,
+  split: serializeSplitMessage,
   startEffect: serializeStartEffectMessage,
   startTeamPreview: serializeNoArgsMessage,
   status: serializeStatusMessage,
