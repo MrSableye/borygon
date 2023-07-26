@@ -84,6 +84,10 @@ export class ManagedShowdownClient {
 
   private challenge?: { keyId: string, challenge: string };
 
+  private lastConnectionAttempt?: number;
+
+  private lastLoginAttempt?: number;
+
   constructor(clientOptions: Partial<ClientOptions> = {}) {
     this.clientOptions = {
       ...defaultClientOptions,
@@ -151,9 +155,18 @@ export class ManagedShowdownClient {
 
   private async connectWithRetry(delay: number, retries: number): Promise<void> {
     if (retries > 0) {
+      const now = Date.now();
+      if (this.lastConnectionAttempt) {
+        const timeBetween = now - this.lastConnectionAttempt;
+        if (timeBetween < delay) {
+          await wait(delay - timeBetween);
+          return this.connectWithRetry(delay, retries);
+        }
+      }
+
       try {
         this.debugLog(false, `Attempting to connect, ${retries} retries remaining`);
-
+        this.lastConnectionAttempt = now;
         return await this.attemptConnect();
       } catch (error) {
         this.debugLog(true, `Error connecting, retrying in ${delay} ms`, error);
@@ -171,7 +184,7 @@ export class ManagedShowdownClient {
 
     this.debugLog(
       false,
-      `Attempting to connect with ${configuration.retries} and retry delay ${configuration.delay} ms`,
+      `Attempting to connect with ${configuration.retries} retries and retry delay ${configuration.delay} ms`,
     );
 
     await this.connectWithRetry(
@@ -262,9 +275,24 @@ export class ManagedShowdownClient {
     retries: number,
   ): Promise<void> {
     if (retries > 0) {
+      const now = Date.now();
+      if (this.lastLoginAttempt) {
+        const timeBetween = now - this.lastLoginAttempt;
+        if (timeBetween < delay) {
+          await wait(delay - timeBetween);
+          return this.loginWithRetry(
+            username,
+            password,
+            avatar,
+            delay,
+            retries,
+          );
+        }
+      }
+
       try {
         this.debugLog(false, `Attempting to login, ${retries} retries remaining`);
-
+        this.lastLoginAttempt = now;
         return await this.attemptLogin(username, password, avatar);
       } catch (error) {
         this.debugLog(true, `Error logging in, retrying in ${delay} ms`, error);
@@ -293,7 +321,7 @@ export class ManagedShowdownClient {
 
     this.debugLog(
       false,
-      `Attempting to login with ${configuration.retries} and retry delay ${configuration.delay} ms`,
+      `Attempting to login with ${configuration.retries} retries and retry delay ${configuration.delay} ms`,
     );
 
     this.debugLog(
