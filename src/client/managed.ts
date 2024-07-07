@@ -66,7 +66,7 @@ const race = <T>(promiseFn: () => Promise<T>, timeout: number): Promise<T> => {
     }),
     new Promise<never>((_, reject) => {
       timer = setTimeout(reject, timeout);
-    })
+    }),
   ]);
 };
 
@@ -442,8 +442,10 @@ export class ManagedShowdownClient {
 
     let unsubscribe: Emittery.UnsubscribeFn | undefined;
     try {
+      /* eslint-disable max-len */
       // This is *almost* `return await race(() => this.receiveWithoutDelay(roomMessageName, predicate), timeout)`
       // However, we need to duplicate the logic here in order to unsubscribe the listener if a timeout occurs.
+      /* eslint-enable max-len */
       return await race(() => new Promise<RoomMessages[K]>((resolve) => {
         unsubscribe = this.messages.on(roomMessageName, (roomMessage) => {
           if (!predicate || predicate(roomMessage)) {
