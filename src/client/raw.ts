@@ -62,7 +62,8 @@ export class RawShowdownClient {
   }
 
   public connect(): Promise<void> {
-    const websocketUrl = `wss://${this.clientOptions.server}:${this.clientOptions.port}/showdown/websocket`;
+    const { server, port, socketTimeout } = this.clientOptions;
+    const websocketUrl = `${port === 443 ? 'wss' : 'ws'}://${server}:${port}/showdown/websocket`;
 
     this.socket = new WebSocket(websocketUrl);
 
@@ -106,7 +107,7 @@ export class RawShowdownClient {
       this.socket?.addEventListener('close', closeListener);
       this.socket?.addEventListener('error', errorListener);
 
-      setTimeout(reject, this.clientOptions.socketTimeout);
+      setTimeout(reject, socketTimeout);
     });
   }
 

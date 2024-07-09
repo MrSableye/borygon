@@ -33,7 +33,7 @@ export interface ClientOptions extends Partial<RawClientOptions> {
 const defaultClientOptions: ClientOptions = {
   throttle: 620,
   connectionRetry: { delay: 30 * 1000, retries: Number.POSITIVE_INFINITY },
-  actionUrl: 'https://play.pokemonshowdown.com/~~showdown/action.php',
+  actionUrl: 'https://play.pokemonshowdown.com/action.php',
   loginRetry: { delay: 30 * 1000, retries: Number.POSITIVE_INFINITY },
   challengeDelay: 200,
   debug: false,
@@ -55,9 +55,20 @@ const createMessageQueue = () => new PriorityQueue<QueuedMessage>((messageA, mes
 });
 
 const wait = (delay: number) => new Promise<void>((resolve) => setTimeout(resolve, delay));
-const waitToReject = (
-  delay: number,
-) => new Promise<never>((_, reject) => setTimeout(reject, delay));
+const race = <T>(promiseFn: () => Promise<T>, timeout: number): Promise<T> => {
+  let timer: NodeJS.Timeout | undefined;
+
+  return Promise.race([
+    promiseFn().then((value) => {
+      clearTimeout(timer!);
+      timer = undefined;
+      return value;
+    }),
+    new Promise<never>((_, reject) => {
+      timer = setTimeout(reject, timeout);
+    }),
+  ]);
+};
 
 export class ManagedShowdownClient {
   private readonly rawClient: RawShowdownClient;
@@ -103,10 +114,6 @@ export class ManagedShowdownClient {
 
     this.messageQueue = createMessageQueue();
     this.loggedIn = false;
-
-    this.messages.on('challenge', (challengeMessage) => {
-      this.challenge = challengeMessage.value.message;
-    });
 
     this.lifecycle.on('disconnect', async (disconnectEvent) => {
       this.debugLog(true, 'Underlying client disconnected, freeing up resources');
@@ -223,12 +230,8 @@ export class ManagedShowdownClient {
       this.debugLog(false, `No login challenge received yet, waiting ${this.clientOptions.challengeDelay} ms for challenge`);
 
       try {
-        await new Promise<void>((resolve, reject) => {
-          this.messages.on('challenge', () => resolve());
-          wait(this.clientOptions.challengeDelay).then(() => reject());
-        });
-
-        return this.attemptLogin(username, password, avatar);
+        const challengeMessage = await this.receive('challenge', this.clientOptions.challengeDelay);
+        this.challenge = challengeMessage.value.message;
       } catch (error) {
         this.debugLog(true, 'Error awaiting challenge');
 
@@ -317,7 +320,7 @@ export class ManagedShowdownClient {
     avatar: string = '1',
     retryConfiguration?: RetryConfiguration,
   ) {
-    const configuration = retryConfiguration || this.clientOptions.loginRetry;
+    const configuration = retryConfiguration ?? this.clientOptions.loginRetry;
 
     this.debugLog(
       false,
@@ -419,8 +422,9 @@ export class ManagedShowdownClient {
     predicate?: (message: RoomMessages[K]) => boolean,
   ): Promise<RoomMessages[K]> {
     return new Promise<RoomMessages[K]>((resolve) => {
-      this.messages.on(roomMessageName, (roomMessage) => {
+      const unsubscribe = this.messages.on(roomMessageName, (roomMessage) => {
         if (!predicate || predicate(roomMessage)) {
+          unsubscribe();
           resolve(roomMessage);
         }
       });
@@ -432,13 +436,28 @@ export class ManagedShowdownClient {
     timeout?: number,
     predicate?: (message: RoomMessages[K]) => boolean,
   ): Promise<RoomMessages[K]> {
-    if (timeout) {
-      return Promise.race([
-        this.receiveWithoutDelay(roomMessageName, predicate),
-        waitToReject(timeout),
-      ]);
+    if (typeof timeout === 'undefined') {
+      return this.receiveWithoutDelay(roomMessageName, predicate);
     }
 
-    return this.receiveWithoutDelay(roomMessageName, predicate);
+    let unsubscribe: Emittery.UnsubscribeFn | undefined;
+    try {
+      /* eslint-disable max-len */
+      // This is *almost* `return await race(() => this.receiveWithoutDelay(roomMessageName, predicate), timeout)`
+      // However, we need to duplicate the logic here in order to unsubscribe the listener if a timeout occurs.
+      /* eslint-enable max-len */
+      return await race(() => new Promise<RoomMessages[K]>((resolve) => {
+        unsubscribe = this.messages.on(roomMessageName, (roomMessage) => {
+          if (!predicate || predicate(roomMessage)) {
+            unsubscribe!();
+            resolve(roomMessage);
+          }
+        });
+      }), timeout);
+    } catch {
+      if (unsubscribe) unsubscribe();
+
+      throw new Error(`Exceeded timeout for ${roomMessageName} event`);
+    }
   }
 }
