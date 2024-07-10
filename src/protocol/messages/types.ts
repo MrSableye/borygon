@@ -731,3 +731,167 @@ export const pokemonSetType = t.intersection([
 
 // TODO: Document this
 export type PokemonSet = t.TypeOf<typeof pokemonSetType>;
+
+const packText = (text: string) => text.replace(/[^A-Za-z0-9]+/g, '');
+
+const convertIvText = (text: string) => (text === '' ? 31 : +text || 0);
+
+const getIvText = (iv?: number) => (iv === 31 || iv === undefined ? '' : iv.toString());
+
+const unpackText = (text: string) => text
+  .replace(/([0-9]+)/g, ' $1 ')
+  .replace(/([A-Z])/g, ' $1')
+  .replace(/[ ][ ]/g, ' ')
+  .trim();
+
+const getMissingPokemonSetArgsErrors = () => [
+  'Name is missing in PokemonSet',
+  'Species is missing in PokemonSet',
+  'Item is missing in PokemonSet',
+  'Ability is missing in PokemonSet',
+  'Moves are missing in PokemonSet',
+  'Nature is missing in PokemonSet',
+  'EVs are missing in PokemonSet',
+  'Gender is missing in PokemonSet',
+  'IVs are missing in PokemonSet',
+  'Shiny value is missing in PokemonSet',
+  'Level is missing in PokemonSet',
+  'Misc flags are missing in PokemonSet',
+];
+
+export const deserializePokemonSet: Deserializer<PokemonSet> = (input) => {
+  const set: Partial<PokemonSet> = {
+    evs: {
+      hp: 0,
+      atk: 0,
+      def: 0,
+      spa: 0,
+      spd: 0,
+      spe: 0,
+    },
+    ivs: {
+      hp: 31,
+      atk: 31,
+      def: 31,
+      spa: 31,
+      spd: 31,
+      spe: 31,
+    },
+  };
+
+  const splitInput = input.split('|');
+  if (splitInput.length < 12) {
+    return {
+      errors: getMissingPokemonSetArgsErrors().slice(splitInput.length, -(12 - splitInput.length)),
+    };
+  }
+
+  const [
+    nameText,
+    speciesText,
+    itemText,
+    abilityText,
+    movesText,
+    natureText,
+    evsText,
+    genderText,
+    ivsText,
+    shinyText,
+    levelText,
+    miscText,
+  ] = splitInput;
+
+  set.name = nameText;
+  set.species = speciesText ? unpackText(speciesText) : set.name;
+  set.item = unpackText(itemText);
+  set.ability = unpackText(abilityText);
+  set.moves = movesText
+    .split(',')
+    .map((move) => unpackText(move));
+  set.nature = unpackText(natureText);
+  if (evsText) {
+    const evs = evsText.split(',');
+    set.evs = {
+      hp: +evs[0] || 0,
+      atk: +evs[1] || 0,
+      def: +evs[2] || 0,
+      spa: +evs[3] || 0,
+      spd: +evs[4] || 0,
+      spe: +evs[5] || 0,
+    };
+  }
+  set.gender = genderText;
+  if (ivsText) {
+    const ivs = ivsText.split(',');
+    set.ivs = {
+      hp: convertIvText(ivs[0]),
+      atk: convertIvText(ivs[1]),
+      def: convertIvText(ivs[2]),
+      spa: convertIvText(ivs[3]),
+      spd: convertIvText(ivs[4]),
+      spe: convertIvText(ivs[5]),
+    };
+  }
+  if (shinyText) {
+    set.shiny = true;
+  }
+  if (levelText) {
+    set.level = +levelText;
+  }
+  if (miscText) {
+    const [
+      happinessText,
+      hpTypeText,
+      pokeballText,
+      gigantamaxText,
+      dynamaxLevelText,
+      teraTypeText,
+    ] = miscText.split(',');
+
+    set.happiness = happinessText ? +happinessText : 255;
+    set.hpType = hpTypeText || '';
+    set.pokeball = unpackText(pokeballText || '');
+    set.gigantamax = !!gigantamaxText;
+    set.dynamaxLevel = dynamaxLevelText ? +dynamaxLevelText : 10;
+    set.teraType = teraTypeText;
+  }
+
+  return { value: set as PokemonSet };
+};
+
+export const serializePokemonSet: Serializer<PokemonSet> = (input) => {
+  const result: string[] = [];
+
+  result.push(input.name || input.species);
+  const id = packText(input.species || input.name);
+  result.push(packText(input.name || input.species) === id ? '' : id);
+  result.push(packText(input.item));
+  result.push(packText(input.ability));
+  result.push(input.moves.map(packText).join(','));
+  result.push(packText(input.nature));
+  const evs = [
+    input.evs.hp || '',
+    input.evs.atk || '',
+    input.evs.def || '',
+    input.evs.spa || '',
+    input.evs.spd || '',
+    input.evs.spe || '',
+  ];
+  const evsText = evs.join(',');
+  result.push(evsText === ',,,,,' ? '' : evsText);
+  result.push(input.gender);
+  const ivs = [
+    getIvText(input.ivs.hp),
+    getIvText(input.ivs.atk),
+    getIvText(input.ivs.def),
+    getIvText(input.ivs.spa),
+    getIvText(input.ivs.spd),
+    getIvText(input.ivs.spe),
+  ];
+  const ivsText = ivs.join(',');
+  result.push(ivsText === ',,,,,' ? '' : ivsText);
+  result.push(input.shiny ? 'S' : '');
+  result.push(input.level && input.level !== 100 ? input.level.toString() : '');
+
+  return { value: result.join('|') };
+};

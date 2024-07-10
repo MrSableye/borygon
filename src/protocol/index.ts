@@ -64,6 +64,7 @@ import { RuleMessage, deserializeRuleMessage, serializeRuleMessage } from './mes
 import { SeedMessage, deserializeSeedMessage, serializeSeedMessage } from './messages/seed';
 import { SetBoostMessage, deserializeSetBoostMessage, serializeSetBoostMessage } from './messages/set-boost';
 import { SetHpMessage, deserializeSetHpMessage, serializeSetHpMessage } from './messages/set-hp';
+import { ShowTeamMessage, deserializeShowTeamMessage, serializeShowTeamMessage } from './messages/show-team';
 import { SideEndMessage, deserializeSideEndMessage, serializeSideEndMessage } from './messages/side-end';
 import { SideStartMessage, deserializeSideStartMessage, serializeSideStartMessage } from './messages/side-start';
 import { SingleMoveMessage, deserializeSingleMoveMessage, serializeSingleMoveMessage } from './messages/single-move';
@@ -199,6 +200,7 @@ export interface PokemonShowdownMessages {
   seed: SeedMessage;
   setBoost: SetBoostMessage;
   setHp: SetHpMessage;
+  showTeam: ShowTeamMessage;
   sideEnd: SideEndMessage;
   sideStart: SideStartMessage;
   silentJoin: JoinMessage;
@@ -321,6 +323,7 @@ export interface RawPokemonShowdownMessages {
   askreg: 'requestRegistration',
   b: 'battle',
   B: 'battle',
+  badge: 'badge',
   battle: 'battle',
   bigerror: 'bigError',
   c: 'chat',
@@ -378,6 +381,7 @@ export interface RawPokemonShowdownMessages {
   roomerror: 'roomError',
   rule: 'rule',
   seed: 'seed',
+  showteam: 'showTeam',
   split: 'split',
   start: 'battleStart',
   swap: 'swap',
@@ -479,6 +483,7 @@ export const rawShowdownPokemonMessages: RawPokemonShowdownMessages = {
   askreg: 'requestRegistration',
   b: 'battle',
   B: 'battle',
+  badge: 'badge',
   battle: 'battle',
   bigerror: 'bigError',
   c: 'chat',
@@ -536,6 +541,7 @@ export const rawShowdownPokemonMessages: RawPokemonShowdownMessages = {
   roomerror: 'roomError',
   rule: 'rule',
   seed: 'seed',
+  showteam: 'showTeam',
   split: 'split',
   start: 'battleStart',
   swap: 'swap',
@@ -667,6 +673,7 @@ export const deserializers: PokemonShowdownMessageDeserializers = {
   seed: deserializeSeedMessage,
   setBoost: deserializeSetBoostMessage,
   setHp: deserializeSetHpMessage,
+  showTeam: deserializeShowTeamMessage,
   sideEnd: deserializeSideEndMessage,
   sideStart: deserializeSideStartMessage,
   silentJoin: deserializeJoinMessage,
@@ -819,6 +826,7 @@ export const serializers: PokemonShowdownMessageSerializers = {
   seed: serializeSeedMessage,
   setBoost: serializeSetBoostMessage,
   setHp: serializeSetHpMessage,
+  showTeam: serializeShowTeamMessage,
   sideEnd: serializeSideEndMessage,
   sideStart: serializeSideStartMessage,
   silentJoin: serializeJoinMessage,
