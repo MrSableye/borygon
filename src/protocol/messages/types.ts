@@ -683,3 +683,51 @@ export const deserializeSide: Deserializer<Side> = (input: string) => {
 export const serializeSide: Serializer<Side> = (input) => ({
   value: `${input.player}: ${input.playerName}`,
 });
+
+export const statsTableExceptHp = t.type({
+  atk: t.number,
+  def: t.number,
+  spa: t.number,
+  spd: t.number,
+  spe: t.number,
+});
+
+// TODO: Document this
+export type StatsTableExceptHp = t.TypeOf<typeof statsTableExceptHp>;
+
+export const statsTableType = t.intersection([
+  statsTableExceptHp,
+  t.type({
+    hp: t.number,
+  }),
+]);
+
+// TODO: Document this
+export type StatsTable = t.TypeOf<typeof statsTableType>;
+
+export const pokemonSetType = t.intersection([
+  t.type({
+    name: t.string,
+    species: t.string,
+    item: t.string,
+    ability: t.string,
+    moves: t.array(t.string),
+    nature: t.string,
+    gender: t.string,
+    evs: statsTableType,
+    ivs: statsTableType,
+    level: t.number,
+  }),
+  t.partial({
+    shiny: t.boolean,
+    happiness: t.number,
+    pokeball: t.string,
+    hpType: t.string,
+    dynamaxLevel: t.number,
+    gigantamax: t.boolean,
+    teraType: t.string,
+  }),
+]);
+
+// TODO: Document this
+export type PokemonSet = t.TypeOf<typeof pokemonSetType>;

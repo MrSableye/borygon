@@ -10,6 +10,7 @@ import {
   KeySchema,
   serializeJson,
 } from '../parser';
+import { statsTableExceptHp } from './types';
 
 const sidePokemonType = t.intersection([
   t.type({
@@ -17,13 +18,7 @@ const sidePokemonType = t.intersection([
     details: t.string, // TODO: Is this a details? Can it be parsed? (Update: it is)
     condition: t.string, // TODO: Is this a condition? Can it be parsed (Update: it is)
     active: t.boolean,
-    stats: t.type({
-      atk: t.number,
-      def: t.number,
-      spa: t.number,
-      spd: t.number,
-      spe: t.number,
-    }),
+    stats: statsTableExceptHp,
     moves: t.array(t.string),
     baseAbility: t.string,
     item: t.string,
