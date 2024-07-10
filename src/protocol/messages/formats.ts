@@ -11,6 +11,7 @@ const formatType = t.type({
   challengeShow: t.boolean,
   tournamentShow: t.boolean,
   isLevel50Format: t.boolean,
+  bestOfDefault: t.boolean,
 });
 
 type Format = t.TypeOf<typeof formatType>;
@@ -58,6 +59,7 @@ export const deserializeFormatsMessage: ArgsDeserializer<FormatsMessage> = (inpu
         challengeShow: (code & 4) > 0, // eslint-disable-line no-bitwise
         tournamentShow: (code & 8) > 0, // eslint-disable-line no-bitwise
         isLevel50Format: (code & 16) > 0, // eslint-disable-line no-bitwise
+        bestOfDefault: (code & 64) > 0, // eslint-disable-line no-bitwise
       });
     }
   });
@@ -94,6 +96,7 @@ export const serializeFormatsMessage: ArgsSerializer<FormatsMessage> = (input) =
     if (format.challengeShow) code |= 4; // eslint-disable-line no-bitwise
     if (format.tournamentShow) code |= 8; // eslint-disable-line no-bitwise
     if (format.isLevel50Format) code |= 16; // eslint-disable-line no-bitwise
+    if (format.bestOfDefault) code |= 64; // eslint-disable-line no-bitwise
     parts.push(`${format.name},${code.toString(16)}`);
   });
 
