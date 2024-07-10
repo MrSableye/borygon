@@ -1,5 +1,7 @@
 import * as t from 'io-ts';
 import {
+  createOptionalDeserializer,
+  createOptionalSerializer,
   createSchemaDeserializer,
   createSchemaSerializer,
   deserializeString,
@@ -12,11 +14,15 @@ import {
   serializePokemon,
 } from './types';
 
-export const megaEvolutionMessageType = t.type({
-  pokemon: pokemonType,
-  species: t.string,
-  megaStone: t.string,
-});
+export const megaEvolutionMessageType = t.intersection([
+  t.type({
+    pokemon: pokemonType,
+    species: t.string,
+  }),
+  t.partial({
+    megaStone: t.string,
+  }),
+]);
 
 /**
  * A message that is sent when a Pokémon Mega Evolves.
@@ -45,7 +51,11 @@ export type MegaEvolutionMessage = t.TypeOf<typeof megaEvolutionMessageType>;
 export const megaEvolutionMessageSchema: KeySchema<MegaEvolutionMessage> = [
   ['pokemon', deserializePokemon, serializePokemon],
   ['species', deserializeString, serializeString],
-  ['megaStone', deserializeString, serializeString],
+  [
+    'megaStone',
+    createOptionalDeserializer(deserializeString),
+    createOptionalSerializer(serializeString),
+  ],
 ];
 
 export const deserializeMegaEvolutionMessage = createSchemaDeserializer(
