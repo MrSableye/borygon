@@ -40,16 +40,16 @@ export const unlinkMessageType = t.type({
  */
 export type UnlinkMessage = t.TypeOf<typeof unlinkMessageType>;
 
-export const unlinkEventTypeSchema: KeySchema<UnlinkMessage> = [
+export const unlinkMessageSchema: KeySchema<UnlinkMessage> = [
   ['user', deserializeUser, serializeUser],
   ['lineCount', deserializeNumber, serializeNumber],
 ];
 
 export const deserializeUnlinkMessage = createSchemaDeserializer(
   unlinkMessageType,
-  unlinkEventTypeSchema,
+  unlinkMessageSchema,
 );
 export const serializeUnlinkMessage = createSchemaSerializer(
   unlinkMessageType,
-  unlinkEventTypeSchema,
+  unlinkMessageSchema,
 );
