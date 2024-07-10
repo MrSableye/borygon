@@ -6,6 +6,7 @@ import {
 import { AbilityMessage, deserializeAbilityMessage, serializeAbilityMessage } from './messages/ability';
 import { ActivateMessage, deserializeActivateMessage, serializeActivateMessage } from './messages/activate';
 import { AnimationMessage, deserializeAnimationMessage, serializeAnimationMessage } from './messages/animation';
+import { BadgeMessage, deserializeBadgeMessage, serializeBadgeMessage } from './messages/badge';
 import { BattleMessage, deserializeBattleMessage, serializeBattleMessage } from './messages/battle';
 import { BlockMessage, deserializeBlockMessage, serializeBlockMessage } from './messages/block';
 import { BoostMessage, deserializeBoostMessage, serializeBoostMessage } from './messages/boost';
@@ -105,6 +106,7 @@ export interface PokemonShowdownMessages {
   ability: AbilityMessage;
   activate: ActivateMessage;
   animation: AnimationMessage;
+  badge: BadgeMessage;
   battle: BattleMessage;
   battleStart: NoArgsMessage;
   bigError: CommonMessageMessage;
@@ -572,6 +574,7 @@ export const deserializers: PokemonShowdownMessageDeserializers = {
   ability: deserializeAbilityMessage,
   activate: deserializeActivateMessage,
   animation: deserializeAnimationMessage,
+  badge: deserializeBadgeMessage,
   battle: deserializeBattleMessage,
   battleStart: deserializeNoArgsMessage,
   bigError: deserializeCommonMessageMessage,
@@ -723,6 +726,7 @@ export const serializers: PokemonShowdownMessageSerializers = {
   ability: serializeAbilityMessage,
   activate: serializeActivateMessage,
   animation: serializeAnimationMessage,
+  badge: serializeBadgeMessage,
   battle: serializeBattleMessage,
   battleStart: serializeNoArgsMessage,
   bigError: serializeCommonMessageMessage,
