@@ -20,3 +20,5 @@
 ### Planned Features
 1. A more battle-oriented client that handles similar logic for reading messages and determining the state of a battle, similar to what the Pokémon Showdown client does
 2. A convenience tool for parsing replays
+3. Ability to override and extend supported message types without modifying source
+4. Ability to tune level of runtime typechecking
