@@ -26,12 +26,14 @@ export interface RawClientOptions {
   server: string;
   port: number;
   socketTimeout: number;
+  ssl: boolean;
 }
 
 const defaultClientOptions: RawClientOptions = {
   server: 'sim3.psim.us',
   port: 443,
   socketTimeout: 10 * 1000,
+  ssl: true,
 };
 
 export class RawShowdownClient {
@@ -62,8 +64,13 @@ export class RawShowdownClient {
   }
 
   public connect(): Promise<void> {
-    const { server, port, socketTimeout } = this.clientOptions;
-    const websocketUrl = `${port === 443 ? 'wss' : 'ws'}://${server}:${port}/showdown/websocket`;
+    const {
+      server,
+      port,
+      socketTimeout,
+      ssl,
+    } = this.clientOptions;
+    const websocketUrl = `${ssl ? 'wss' : 'ws'}://${server}:${port}/showdown/websocket`;
 
     this.socket = new WebSocket(websocketUrl);
 
