@@ -157,7 +157,7 @@ export class ManagedShowdownClient {
   private async attemptConnect() {
     this.loggedIn = false;
     await this.rawClient.connect();
-    this.handleQueue();
+    this.handleQueue(this.clientOptions.throttle);
   }
 
   private async connectWithRetry(delay: number, retries: number): Promise<void> {
@@ -372,7 +372,7 @@ export class ManagedShowdownClient {
     }
   }
 
-  private handleQueue() {
+  private handleQueue(throttle: number) {
     this.messageQueueInterval = setInterval(() => {
       if (!this.isConnected) {
         this.stopQueue();
@@ -384,7 +384,12 @@ export class ManagedShowdownClient {
         const message = this.messageQueue.deq();
         this.sendQueued(message);
       } catch (error) {} // eslint-disable-line no-empty
-    }, this.clientOptions.throttle);
+    }, throttle);
+  }
+
+  public updateQueueThrottle(throttle: number) {
+    this.stopQueue();
+    this.handleQueue(throttle);
   }
 
   private stopQueue() {
